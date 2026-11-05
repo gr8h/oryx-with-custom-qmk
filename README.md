@@ -1,5 +1,9 @@
 # Oryx with custom QMK
 
+> **This fork:** the `nd96R` layout is maintained in code (`nd96R/keymap.c` and `nd96R/custom_qmk.c`), not in Oryx.
+> Don't edit the layout in Oryx. To build, run **Actions → Fetch and build layout** with the defaults.
+> Design and reasoning are in [`docs/layout-review/`](docs/layout-review/).
+
 This repository allows combining the convenience of [Oryx’s](https://www.zsa.io/oryx) graphical layout editing with the power of [QMK](https://qmk.fm), allowing you to customize your Oryx layout with advanced QMK features like Achordion and Repeat Key, while automating firmware builds through GitHub Actions.
 
 For a detailed guide, check out the full [blog post here](https://blog.zsa.io/oryx-custom-qmk-features).

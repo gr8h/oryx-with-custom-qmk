@@ -1,19 +1,18 @@
-# Oryx changes for the new layout
+# Layout changes
 
-This is the key-by-key list to apply in Oryx (layout `nd96R`) so it matches the new layout in
-[the layout review](index.html). The custom firmware behaviour lives in `nd96R/custom_qmk.c`,
-`config.h` and `rules.mk`, and is merged in by the "Fetch and build layout" action as usual.
+The new layout is written directly in `nd96R/keymap.c`, and the custom behaviour lives in `nd96R/custom_qmk.c`.
+This file lists every key that changed from the original Oryx layout, for reference.
+You don't need to make these changes in Oryx. Design and reasoning are in [the layout review](index.html).
 
-The Mouse layer (layer 4) is unchanged. Keys not listed stay as they are.
-
+The Mouse layer (layer 4) is unchanged. Keys not listed stay as they were.
 
 ### Layer 0 · Base
 
 Only the thumbs and three top-row keys change. Letters, home-row mods, `:`, both Backspaces and Esc/Shift stay exactly as they are.
 
-| Key | Now | Set in Oryx to |
+| Key | Before | Now |
 |---|---|---|
-| Number row, left inner (T/G/B) | No key | `KC_F24` (Leader placeholder, handled in custom_qmk.c) |
+| Number row, left inner (T/G/B) | No key | Leader (`QK_LEAD`) |
 | Number row, right inner (Y/H/N) | No key | Caps Word (`CW_TOGG`) |
 | Number row, right outer | Transparent | `LCTL(LGUI(LSFT(KC_4)))` · Shot clip |
 | Left outer thumb | **Space**, hold → layer 2 (Symbols) | `KC_SPACE`, hold → layer 3 (Nav) |
@@ -24,7 +23,7 @@ Only the thumbs and three top-row keys change. Letters, home-row mods, `:`, both
 
 Right hand becomes a numpad, left hand gets the VS Code keys that used to be on Nav. Plain ⌃⌥⌘ on A S D let ⌘+digit replace the ⌘1/⌘2 tap dance.
 
-| Key | Now | Set in Oryx to |
+| Key | Before | Now |
 |---|---|---|
 | Number row, right outer | **MyPC** | Transparent |
 | Top row, left pinky (Q/A/Z) | No key | Layer Lock (`QK_LLCK`) |
@@ -64,7 +63,7 @@ Right hand becomes a numpad, left hand gets the VS Code keys that used to be on 
 
 Your left-hand bracket block stays. `_` and `?` swap, `->`/`=>` are macros, and the symbols that now live on Numbers (`+ - * /`, `0`) are removed.
 
-| Key | Now | Set in Oryx to |
+| Key | Before | Now |
 |---|---|---|
 | Top row, right index (U/J/M) | **-** | Macro: types `->` |
 | Top row, right middle (I/K/,) | **+** | Macro: types `=>` |
@@ -81,7 +80,7 @@ Your left-hand bracket block stays. `_` and `?` swap, `->`/`=>` are macros, and 
 
 VS Code panels, media and app shortcuts move off. What remains is moving and editing text, plus real Enter on the right inner thumb.
 
-| Key | Now | Set in Oryx to |
+| Key | Before | Now |
 |---|---|---|
 | Top row, left ring (W/S/X) | **⌘\** | `LGUI(LSFT(KC_LBRC))` · Prev tab |
 | Top row, left middle (E/D/C) | **⌘⇧[** | `LGUI(LSFT(KC_RBRC))` · Next tab |
@@ -109,9 +108,9 @@ VS Code panels, media and app shortcuts move off. What remains is moving and edi
 
 ### Layer 5 · F-keys + media (new layer)
 
-Add a new layer **after** the Mouse layer so it becomes layer 5 (custom_qmk.c expects `FN_LAYER 5`). Leave both inner thumbs **transparent** on this layer. You don't assign a key to open it: pressing both inner thumbs together within 35 ms does that (custom_qmk.c).
+A new layer 5, after the Mouse layer (custom_qmk.c expects `FN_LAYER 5`). Both inner thumbs are transparent on it. No key opens it: pressing both inner thumbs together within 35 ms does (custom_qmk.c).
 
-| Key | Now | Set in Oryx to |
+| Key | Before | Now |
 |---|---|---|
 | Number row, left outer | — | Bootloader (`QK_BOOT`) |
 | Number row, right outer | — | `LCTL(LGUI(KC_Q))` (lock screen) |
@@ -143,22 +142,14 @@ Add a new layer **after** the Mouse layer so it becomes layer 5 (custom_qmk.c ex
 
 ## Lights
 
-Nothing to change in Oryx. Once Space on Base holds layer 3, `custom_qmk.c` draws the new colours on every layer
-except Mouse, which keeps its Oryx colours. Until then your current Oryx colours stay as they are.
-To change a colour, edit `light_colors` in `custom_qmk.c`, or pick colours on the Lights tab of the review page
-and paste the "Copy settings" line into the PR.
+The colours come from `light_map` in `nd96R/custom_qmk.c`, on every layer except Mouse, which keeps its `ledmap` colours from `keymap.c`.
+To change a colour, edit `light_colors` in `custom_qmk.c`, or pick colours on the Lights tab of the review page and send the "Copy settings" line.
 
-## Oryx settings to leave alone
+## Editing the layout from now on
 
-`custom_qmk.c` and `config.h` already set these. Turning them on in Oryx would make Oryx generate the same
-functions a second time, and the build would fail:
-
-- Per-key tapping terms
-- Chordal Hold, Flow Tap, Permissive Hold or "Hold on other key press"
-- Combos on the inner thumbs
-
-If Oryx won't let the left inner thumb tap Shift+Enter while holding a layer, set it to tap Enter / hold layer 1
-and mention it in the PR: a two-line change in `custom_qmk.c` can turn that tap into Shift+Enter.
+`nd96R/keymap.c` is now the source of truth. **Don't change the layout in Oryx.** The "Fetch and build layout" action still
+pulls from Oryx: if Oryx's export changes, the merge step either conflicts or brings old keys back. As long as the layout in
+Oryx stays untouched, the action finds no Oryx change and builds this repo's layout.
 
 ## Check after flashing
 
