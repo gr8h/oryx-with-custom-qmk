@@ -141,6 +141,13 @@ Add a new layer **after** the Mouse layer so it becomes layer 5 (custom_qmk.c ex
 | Bottom row, right middle (I/K/,) | — | `RGB_VAD` |
 | Bottom row, right ring (O/L/.) | — | `RGB_VAI` |
 
+## Lights
+
+Nothing to change in Oryx. Once Space on Base holds layer 3, `custom_qmk.c` draws the new colours on every layer
+except Mouse, which keeps its Oryx colours. Until then your current Oryx colours stay as they are.
+To change a colour, edit `light_colors` in `custom_qmk.c`, or pick colours on the Lights tab of the review page
+and paste the "Copy settings" line into the PR.
+
 ## Oryx settings to leave alone
 
 `custom_qmk.c` and `config.h` already set these. Turning them on in Oryx would make Oryx generate the same
@@ -163,3 +170,4 @@ and mention it in the PR: a two-line change in `custom_qmk.c` can turn that tap 
 6. **Leader:** the Leader key then `m` types `&mut `.
 7. **Caps Word:** double-tapping the left one-shot Shift starts Caps Word.
 8. **Esc:** the right outer thumb still gives Esc on a tap and Shift on a hold.
+9. **Lights:** Base is mostly dark with coloured thumbs, and each layer lights in its own colour. Caps Word makes the one-shot Shift and Caps Word keys glow white.
