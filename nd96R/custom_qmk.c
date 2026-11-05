@@ -1,18 +1,17 @@
-// Custom QMK features layered on top of the Oryx export.
+// Custom QMK behaviour for the layout in keymap.c.
 //
 // This file is not compiled on its own: rules.mk sets INTROSPECTION_KEYMAP_C so
-// QMK includes it right after keymap.c (needed for key_overrides). Keep the
-// Oryx-generated keymap.c untouched so Oryx exports keep merging cleanly.
+// QMK includes it right after keymap.c (needed for key_overrides).
 //
 // Keys are identified by *physical position* (matrix row/col), not keycode, so
-// the logic keeps working whatever keycodes Oryx generates for each thumb.
+// the logic keeps working if a thumb's keycode changes.
 // Layout design and reasoning: docs/layout-review/
 
 #include QMK_KEYBOARD_H
 #include "keymap_introspection.h"
 
 // ---------------------------------------------------------------------------
-// Layer numbers (must match the layer order in Oryx)
+// Layer numbers (must match the layer order in keymap.c)
 // ---------------------------------------------------------------------------
 #define NUM_LAYER 1 // Numbers + IDE   (hold L-inner thumb)
 #define SYM_LAYER 2 // Symbols         (hold R-inner thumb)
@@ -102,7 +101,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
 uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_keycode) {
     // Flow Tap only on the home-row mods: mid-word they always type letters.
     // Never on thumbs: Space must still reach Nav right after typing (send a
-    // message), and Oryx's placeholder for the Numbers thumb is a letter key.
+    // message), and a forced tap on the Numbers thumb would insert a newline.
     if (is_home_row_mod(record) && is_flow_tap_key(prev_keycode)) {
         return FLOW_TAP_TERM;
     }
@@ -116,7 +115,7 @@ const key_override_t shift_semicolon_question = ko_make_basic(MOD_MASK_SHIFT, KC
 const key_override_t *key_overrides[]         = {&shift_semicolon_question};
 
 // ---------------------------------------------------------------------------
-// Leader: in Oryx put F24 on the Leader key; tap it, then one letter.
+// Leader (QK_LEAD on Base's number row): tap it, then one letter.
 // ---------------------------------------------------------------------------
 bool leader_add_user(uint16_t keycode) {
     return true; // every sequence is one key long: finish immediately
@@ -148,10 +147,10 @@ void leader_end_user(void) {
 // Lights: calm Base, one colour per layer. Preview and reasoning are on the
 // "Lights" tab of docs/layout-review/index.html.
 //
-// This runs after Oryx's own layer colours, so it wins on every layer listed
-// in light_map below. The Mouse layer keeps its Oryx colours. Brightness still
-// follows the Bri -/+ keys, and Oryx's "toggle layer colours" key and live
-// training mode still work.
+// This runs after the ledmap colours in keymap.c, so it wins on every layer
+// listed in light_map below. The Mouse layer keeps its ledmap colours.
+// Brightness still follows the Bri -/+ keys, and the "toggle layer colours"
+// setting and Keymapp live training still work.
 // ---------------------------------------------------------------------------
 #define MOUSE_LAYER 4
 #define LIGHT_DIM_PERCENT 40 // brightness of the "dim" keys; bright keys use 100%
@@ -266,9 +265,9 @@ static const uint8_t PROGMEM light_map[][MATRIX_ROWS][MATRIX_COLS] = {
 #define CAPS_WORD_SHIFT_KEY POS(2, 1) // one-shot Shift on Base
 #define CAPS_WORD_KEY POS(6, 0)       // Caps Word key (number row, right inner)
 
-// The light map describes the new layout. Until Oryx has it (Space on Base
-// holds the Nav layer), keep Oryx's own colours so nothing is mislabelled.
-static bool new_layout_in_oryx(void) {
+// The light map describes the new layout. If keymap.c ever goes back to the old
+// one (Space on Base no longer holds Nav), keep the ledmap colours instead.
+static bool new_layout_active(void) {
     static int8_t cached = -1;
     if (cached < 0) {
         cached = keymap_key_to_keycode(0, L_OUTER_THUMB) == LT(NAV_LAYER, KC_SPACE);
@@ -290,12 +289,12 @@ static RGB light_rgb(uint8_t code, uint8_t brightness) {
 }
 
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-    if (rawhid_state.rgb_control || keyboard_config.disable_layer_led || !new_layout_in_oryx()) {
+    if (rawhid_state.rgb_control || keyboard_config.disable_layer_led || !new_layout_active()) {
         return true; // live training, layer colours switched off, or old layout
     }
     const uint8_t layer = get_highest_layer(layer_state | default_layer_state);
     if (layer == MOUSE_LAYER || layer >= ARRAY_SIZE(light_map)) {
-        return true; // keep Oryx's colours
+        return true; // keep the ledmap colours
     }
     const uint8_t brightness = rgb_matrix_get_val();
     const bool    locked     = is_layer_locked(layer);
@@ -414,14 +413,6 @@ bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     if (pos_is(record, L_INNER_THUMB) || pos_is(record, R_INNER_THUMB)) {
         handle_fn_chord(record);
-    }
-
-    // Leader key (F24 placeholder set in Oryx)
-    if (keycode == KC_F24) {
-        if (record->event.pressed) {
-            leader_start();
-        }
-        return false;
     }
 
     return handle_num_guard(keycode, record);
