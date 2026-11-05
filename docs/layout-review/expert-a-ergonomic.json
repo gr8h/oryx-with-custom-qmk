@@ -1,0 +1,1337 @@
+{
+ "expert": "Expert A — ergonomic minimalist",
+ "school": "Miryoku-style 3x5 + thumbs (Manna Harbour), Callum's modifiers on every layer, Pascal Getreuer's tap-hold tuning (Chordal Hold, Flow Tap), Seniply's Extend-layer conventions, Ben Vallack's small-footprint discipline",
+ "summary": "Your layout gets several things right already: home-row mods, Vim arrows on HJKL, an unshifted :, and an empty number row. The problem is where the busiest keys live. Backspace sits on two outer pinky keys, and Shift is either an outer pinky key or a thumb hold shared with Esc. SYM is held by the same hand that types half its symbols, and NAV, NUM and MOUSE have no modifiers, so selecting text, ⌘+digit and ⌘-click all mean holding a modifier first. I rebuild it as a Miryoku-style 3x5 core plus four thumbs: Space/NAV and Tab/NUM on the left, Enter/FUN and Backspace/SYM on the right. Each layer's keys sit under the opposite hand, the same ⌃⌥⌘⇧ home row repeats on every layer, and the outer columns go dark apart from '. Chordal Hold, Flow Tap and Permissive Hold make the home-row mods (now with Shift) safe at speed, and F-keys, Caps Word, Del and clipboard keys fill the gaps. No typed-text macros are needed, because -> and => are already two-tap rolls.",
+ "layers": [
+  {
+   "id": 0,
+   "replaces": 0,
+   "name": "Base",
+   "activation": "default",
+   "tap": [
+    [
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--"
+    ],
+    [
+     "--",
+     "Q",
+     "W",
+     "E",
+     "R",
+     "T",
+     "Y",
+     "U",
+     "I",
+     "O",
+     "P",
+     "--"
+    ],
+    [
+     "--",
+     "A",
+     "S",
+     "D",
+     "F",
+     "G",
+     "H",
+     "J",
+     "K",
+     "L",
+     ":",
+     "'"
+    ],
+    [
+     "--",
+     "Z",
+     "X",
+     "C",
+     "V",
+     "B",
+     "N",
+     "M",
+     ",",
+     ".",
+     ";",
+     "--"
+    ],
+    [
+     "Space",
+     "Tab",
+     "Enter",
+     "Bspc"
+    ]
+   ],
+   "hold": [
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "⌃",
+     "⌥",
+     "⌘",
+     "⇧",
+     "",
+     "",
+     "⇧",
+     "⌘",
+     "⌥",
+     "⌃",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "NAV",
+     "NUM",
+     "FUN",
+     "SYM"
+    ]
+   ],
+   "cat": [
+    [
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "none",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "none"
+    ],
+    [
+     "none",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "sym",
+     "sym"
+    ],
+    [
+     "none",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "alpha",
+     "sym",
+     "sym",
+     "sym",
+     "none"
+    ],
+    [
+     "edit",
+     "edit",
+     "edit",
+     "edit"
+    ]
+   ],
+   "changes": [
+    "Backspace moves from two outer-column keys (top right and bottom left) to the tap of the R-outer thumb, the primary right thumb. It is one of your most-pressed keys and no longer needs a pinky stretch.",
+    "Shift goes on the home row at F and J, which had no modifier before. Your ⌃ ⌥ ⌘ order on A S D and ; L K stays the same, so nothing you already know moves. The OS⇧ key on the outer pinky column and the Esc/⇧ thumb go away, and Shift is now on the strongest finger of each hand, the same on every layer.",
+    "The thumbs get new jobs so that each layer key sits on the opposite hand from what it holds: Space/NAV on L-outer (Space stays, NAV moves here from L-inner), Tab/NUM on L-inner, Enter/FUN on R-inner, and Bspc/SYM on R-outer. Space and Backspace are the taps on the two primary thumbs.",
+    "Esc leaves the corner key and the right thumb and becomes a J+K tap combo. It sends a real Esc, so it works in insert mode, the terminal and chat. Holding J+K still gives ⇧⌘ for shortcuts.",
+    "= leaves the bottom-right outer key, a diagonal pinky stretch, and goes to the SYM home row. The second Tab and the second Bspc are removed. The other outer keys and the whole number row are empty on purpose.",
+    "' stays on the right outer home key. It is the only outer-column key I kept: you type apostrophes in chat all day, it would be worse behind a layer, and this is the ANSI spot your finger already knows.",
+    "Kept as they are: the QWERTY letters (so HJKL and your typing speed survive), : on the right pinky home key (tap :, hold ⌃) and ; at bottom right. Both are good choices for Vim and Rust.",
+    "New (C): a key override makes Shift+; send ?. That puts ? back where QWERTY fingers expect it, Shift plus the bottom-right pinky key, and the combination is otherwise wasted because today it only repeats the : you already have."
+   ],
+   "why": "Every key you press thousands of times a day is now under a thumb, on the home row, or a home-row combo. That covers Space, Backspace, Enter, Tab, Shift and Esc. The pinkies only type letters and : ; '. All four modifiers repeat on both home rows in the same order, so any shortcut can be an easy chord across both hands. Chordal Hold and Flow Tap keep fast typing free of accidental modifiers."
+  },
+  {
+   "id": 1,
+   "replaces": 1,
+   "name": "Numbers",
+   "activation": "hold L-inner thumb (tap = Tab)",
+   "tap": [
+    [
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--"
+    ],
+    [
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "+",
+     "7",
+     "8",
+     "9",
+     "*",
+     "--"
+    ],
+    [
+     "--",
+     "⌃",
+     "⌥",
+     "⌘",
+     "⇧",
+     "LLock",
+     "-",
+     "4",
+     "5",
+     "6",
+     ":",
+     "--"
+    ],
+    [
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "#",
+     "1",
+     "2",
+     "3",
+     "\\",
+     "--"
+    ],
+    [
+     "",
+     "",
+     ".",
+     "0"
+    ]
+   ],
+   "hold": [
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     ""
+    ]
+   ],
+   "cat": [
+    [
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "sym",
+     "num",
+     "num",
+     "num",
+     "sym",
+     "none"
+    ],
+    [
+     "none",
+     "mod",
+     "mod",
+     "mod",
+     "mod",
+     "sys",
+     "sym",
+     "num",
+     "num",
+     "num",
+     "sym",
+     "none"
+    ],
+    [
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "sym",
+     "num",
+     "num",
+     "num",
+     "sym",
+     "none"
+    ],
+    [
+     "trns",
+     "trns",
+     "num",
+     "num"
+    ]
+   ],
+   "changes": [
+    "The layer is now held with the L-inner thumb instead of R-inner, so the digits sit on the opposite hand as a built-in numpad: 789 / 456 / 123 on U I O / J K L / M , . with 0 under the right primary thumb and . on R-inner. Today 6 to 0 sit under the same hand that is holding the layer.",
+    "The keypad operator keys (KP-, KP+, KP*, KP/) become plain + - * keys. Terminals and Vim can turn keypad codes into something else when application-keypad mode is on.",
+    "The left home row gets plain ⌃ ⌥ ⌘ ⇧. ⌘1 to ⌘9 (VS Code editor groups, Slack and browser tabs) is now hold-and-tap with any digit, which replaces the ⌘1/⌘2 tap dance. ⇧ plus a digit gives the same symbols as on a normal number row: ! @ # $ % ^ & * ( ).",
+    "The spare slots hold : (times, and ports such as localhost:8080), # (issue numbers) and \\. % and ^ lose their own keys because ⇧5 and ⇧6 already make them.",
+    "Layer Lock goes on G, so long runs of numbers such as tables, IP addresses or test data don't need a held thumb.",
+    "MyComputer (top right) is removed because it does nothing useful on macOS."
+   ],
+   "why": "Holding with one hand and typing with the other leaves the right hand free to type numbers in the familiar numpad shape. The left thumb holds the layer and the left fingers add modifiers. That gives you ⌘+digit, ⇧+digit and ⌃+digit (tmux windows) for free, so the tap dance and the keypad keycodes can go."
+  },
+  {
+   "id": 2,
+   "replaces": 2,
+   "name": "Symbols",
+   "activation": "hold R-outer thumb (tap = Backspace)",
+   "tap": [
+    [
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--"
+    ],
+    [
+     "--",
+     "`",
+     "<",
+     "{",
+     "}",
+     "@",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--"
+    ],
+    [
+     "--",
+     "=",
+     "!",
+     "(",
+     ")",
+     "&",
+     "--",
+     "⇧",
+     "⌘",
+     "⌥",
+     "⌃",
+     "--"
+    ],
+    [
+     "--",
+     "/",
+     ">",
+     "[",
+     "]",
+     "|",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--"
+    ],
+    [
+     "_",
+     "-",
+     "",
+     ""
+    ]
+   ],
+   "hold": [
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     ""
+    ]
+   ],
+   "cat": [
+    [
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "none",
+     "sym",
+     "sym",
+     "sym",
+     "sym",
+     "sym",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "none",
+     "sym",
+     "sym",
+     "sym",
+     "sym",
+     "sym",
+     "none",
+     "mod",
+     "mod",
+     "mod",
+     "mod",
+     "none"
+    ],
+    [
+     "none",
+     "sym",
+     "sym",
+     "sym",
+     "sym",
+     "sym",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "sym",
+     "sym",
+     "trns",
+     "trns"
+    ]
+   ],
+   "changes": [
+    "The layer is now held with the R-outer thumb (Bspc) instead of L-outer (Space), and every symbol is on the left hand. Today half the symbols sit under the same hand that is holding the layer.",
+    "The three bracket pairs stack on the middle and index fingers: { } on top, ( ) on the home row, [ ] below. Each pair is an inward roll, so println!( and vec![ type without changing rows.",
+    "= (pinky) and ! (ring) go on the home row, with < above and > below them, so == != => <= >= are rolls between neighbouring fingers. _ and - move to the two left thumbs, so snake_case, --release and -> need no finger movement.",
+    "/ ` @ | & join the main 3x5 keys. ? moves to ⇧; on the base layer and \" to ⇧'. < and > still also work as ⇧, and ⇧. as usual, and ~ is ⇧`. $ % ^ # * live on NUM, as their own keys or as ⇧ plus a digit. The extra copies of 0 and . are removed.",
+    "The right home row gets plain ⇧ ⌘ ⌥ ⌃ for shortcuts that use a symbol: ⌘/ (toggle comment), ⌘[ and ⌘] (outdent and indent), ⌃` (terminal), ⌘= and ⌘- (zoom)."
+   ],
+   "why": "Rust uses a lot of symbols. With the right thumb holding and the right fingers on modifiers, every symbol is under the left hand, so you never have to press a thumb and a finger of the same hand together. The most common Rust pairs (-> => != && || () {} []) become two-tap rolls inside the layer, and :: stays on the base pinky."
+  },
+  {
+   "id": 3,
+   "replaces": 3,
+   "name": "Nav / IDE",
+   "activation": "hold L-outer thumb (tap = Space)",
+   "tap": [
+    [
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--"
+    ],
+    [
+     "--",
+     "⌃`",
+     "⌘\\",
+     "⌘⇧[",
+     "⌘⇧]",
+     "⌘⇧F",
+     "⌥P",
+     "⌥H",
+     "⌥L",
+     "⌥N",
+     "⌃⇧-",
+     "--"
+    ],
+    [
+     "--",
+     "⌃",
+     "⌥",
+     "⌘",
+     "⇧",
+     "⌃⇧G",
+     "←",
+     "↓",
+     "↑",
+     "→",
+     "⌃-",
+     "--"
+    ],
+    [
+     "--",
+     "⌘Z",
+     "⌘X",
+     "⌘C",
+     "⌘V",
+     "⌘⇧Z",
+     "Home",
+     "PgDn",
+     "PgUp",
+     "End",
+     "CapsW",
+     "--"
+    ],
+    [
+     "",
+     "",
+     "Enter",
+     "Del"
+    ]
+   ],
+   "hold": [
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     ""
+    ]
+   ],
+   "cat": [
+    [
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "none",
+     "ide",
+     "ide",
+     "ide",
+     "ide",
+     "ide",
+     "nav",
+     "nav",
+     "nav",
+     "nav",
+     "nav",
+     "none"
+    ],
+    [
+     "none",
+     "mod",
+     "mod",
+     "mod",
+     "mod",
+     "ide",
+     "nav",
+     "nav",
+     "nav",
+     "nav",
+     "nav",
+     "none"
+    ],
+    [
+     "none",
+     "edit",
+     "edit",
+     "edit",
+     "edit",
+     "edit",
+     "nav",
+     "nav",
+     "nav",
+     "nav",
+     "edit",
+     "none"
+    ],
+    [
+     "trns",
+     "trns",
+     "edit",
+     "edit"
+    ]
+   ],
+   "changes": [
+    "The layer is now held with L-outer (Space) instead of L-inner (Enter). The layer you hold most goes on the primary thumb, and Enter no longer shares a key with a layer you hold all day.",
+    "The left home row becomes plain ⌃ ⌥ ⌘ ⇧: ⇧+arrows selects, ⌥+arrows jumps by word, ⌘+arrows goes to line or file ends, ⌃+arrows switches macOS Spaces, and ⌥↑/↓ moves a line in VS Code. The current layer has no modifiers at all.",
+    "Kept exactly as they are: arrows on HJKL, Home/PgDn/PgUp/End under them, and the tmux keys ⌥P ⌥H ⌥L ⌥N above them. They still send Right Option; switch them to Left Option only if a terminal types special characters instead of running the binding.",
+    "Shortcuts built on a symbol or a hard-to-chord key keep their own key: ⌘\\ ⌘⇧[ ⌘⇧] stay on W E R, ⌃` moves from V to Q, ⌘⇧F from D to T and ⌃⇧G from S to G. Shortcuts built on a letter (⌘⇧E, ⌘⇧H, ⌥⌘C, ⌥⌘⇧C, ⌘↓, ⌥Space) lose their key, because with home-row mods on both hands they are now easy chords: hold J+K and tap E, or hold L and tap Space.",
+    "The bottom-left keys become ⌘Z ⌘X ⌘C ⌘V ⌘⇧Z on Z X C V B, so you can select with ⇧+arrows and copy or paste without leaving the layer. This is Seniply's Extend-layer convention.",
+    "New: VS Code Back (⌃-) and Forward (⌃⇧-) on the right pinky column, for the jumps back and forth around go-to-definition that Rust navigation is full of. Caps Word goes under them.",
+    "While you navigate, the right thumbs are Enter and Del. Media, volume and the screenshot key move to the new FUN layer, and the outer columns are cleared."
+   ],
+   "why": "Navigation is now held on the primary thumb with modifiers under the same hand, so editing with arrows can really replace the mouse: select a word, jump to the end of a line, or move a line. The Vim-style arrow block you built stays exactly as it is, and the VS Code shortcuts that really need their own key keep one."
+  },
+  {
+   "id": 4,
+   "replaces": 4,
+   "name": "Mouse",
+   "activation": "automouse (move the Navigator), or Layer Lock",
+   "tap": [
+    [
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--"
+    ],
+    [
+     "--",
+     "--",
+     "--",
+     "CPI-",
+     "CPI+",
+     "TogScr",
+     "BTN1",
+     "BTN3",
+     "BTN2",
+     "--",
+     "--",
+     "--"
+    ],
+    [
+     "--",
+     "⌃",
+     "⌥",
+     "⌘",
+     "⇧",
+     "Drag",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--"
+    ],
+    [
+     "--",
+     "⌘Z",
+     "⌘X",
+     "⌘C",
+     "⌘V",
+     "LLock",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--"
+    ],
+    [
+     "",
+     "",
+     "",
+     ""
+    ]
+   ],
+   "hold": [
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     ""
+    ]
+   ],
+   "cat": [
+    [
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "none",
+     "none",
+     "none",
+     "sys",
+     "sys",
+     "mouse",
+     "mouse",
+     "mouse",
+     "mouse",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "none",
+     "mod",
+     "mod",
+     "mod",
+     "mod",
+     "mouse",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "none",
+     "edit",
+     "edit",
+     "edit",
+     "edit",
+     "sys",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "trns",
+     "trns",
+     "trns",
+     "trns"
+    ]
+   ],
+   "changes": [
+    "The left home row gets plain ⌃ ⌥ ⌘ ⇧, so ⌘-click (go to definition, open a link in a new tab), ⇧-click (extend a selection) and ⌥-click (add a cursor in VS Code) work without holding the modifier before you touch the ball.",
+    "Clipboard keys on Z X C V (⌘Z ⌘X ⌘C ⌘V), the same as on NAV, so you can select with the mouse, copy, click and paste with one hand.",
+    "Drag-scroll moves from F to G and toggle-scroll from G to T, to make room for ⇧ on F. Layer Lock moves from C to B. CPI- and CPI+ move to the top row (E and R), because you set them once and forget them.",
+    "Kept: BTN1/BTN3/BTN2 on Y U I, which is where you put them for the Navigator, and transparent thumbs, so Space, Enter and Bspc still work while the pointer layer is on."
+   ],
+   "why": "A pointer layer without modifiers forces you to hold them before you touch the ball. Putting the same four modifiers here means every layer uses one modifier map, and the most common mouse-plus-key actions in VS Code and the browser become one-handed."
+  },
+  {
+   "id": 5,
+   "replaces": null,
+   "name": "Fn / Media",
+   "activation": "hold R-inner thumb (tap = Enter)",
+   "tap": [
+    [
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--"
+    ],
+    [
+     "--",
+     "F12",
+     "F7",
+     "F8",
+     "F9",
+     "⌘⇧4",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--"
+    ],
+    [
+     "--",
+     "F11",
+     "F4",
+     "F5",
+     "F6",
+     "Vol+",
+     "--",
+     "⇧",
+     "⌘",
+     "⌥",
+     "⌃",
+     "--"
+    ],
+    [
+     "--",
+     "F10",
+     "F1",
+     "F2",
+     "F3",
+     "Vol-",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--",
+     "--"
+    ],
+    [
+     "Play",
+     "⌃⌘⇧4",
+     "",
+     ""
+    ]
+   ],
+   "hold": [
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
+     "",
+     "",
+     "",
+     ""
+    ]
+   ],
+   "cat": [
+    [
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "none",
+     "fn",
+     "fn",
+     "fn",
+     "fn",
+     "sys",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "none",
+     "fn",
+     "fn",
+     "fn",
+     "fn",
+     "media",
+     "none",
+     "mod",
+     "mod",
+     "mod",
+     "mod",
+     "none"
+    ],
+    [
+     "none",
+     "fn",
+     "fn",
+     "fn",
+     "fn",
+     "media",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none",
+     "none"
+    ],
+    [
+     "media",
+     "sys",
+     "trns",
+     "trns"
+    ]
+   ],
+   "changes": [
+    "New layer, held with R-inner (Enter). F1 to F12 sit on the left hand in the same 789 / 456 / 123 shape as the NUM digits, with F10 to F12 on the pinky column. The current layout has no F-keys at all, and VS Code wants F2 (rename symbol), F12 (go to definition), F8 (next problem) and F5/F9/F10/F11 (debugging).",
+    "The right home row has ⇧ ⌘ ⌥ ⌃ for ⇧F12 (find references) and ⌥F12 (peek definition).",
+    "Volume up and down and the ⌘⇧4 screenshot move here from NAV's outer columns, and Play/Pause goes on the left primary thumb.",
+    "New: ⌃⌘⇧4 (screenshot an area to the clipboard) on L-inner, so you can paste straight into Slack or an LLM chat without a file landing on the desktop.",
+    "Stop and Mute are dropped. Media Stop does nothing on macOS, and Mute is rarely needed next to Vol- and Play/Pause."
+   ],
+   "why": "F-keys and media are rare enough to sit behind the least-used thumb hold. But a Rust workflow in VS Code really needs F2 and F12, and the current layout can't send them at all. Grouping them with the system keys also clears every outer-column key off NAV."
+  }
+ ],
+ "combos": [
+  {
+   "keys": "J+K (tap only)",
+   "output": "Esc",
+   "why": "Vim needs Esc constantly, and this keeps it on the home row with no thumb or corner reach. It is tap-only, so holding J+K still gives ⇧⌘ for shortcuts like ⌘⇧E. 'jk' almost never appears in English or Rust, so it rarely fires by accident."
+  },
+  {
+   "keys": "F+J (tap only)",
+   "output": "Caps Word",
+   "why": "Tap both Shift keys together to type SCREAMING_SNAKE_CASE Rust constants and chat acronyms (API, PR, LLM) without holding Shift. Caps Word turns itself off at the next space or punctuation."
+  }
+ ],
+ "macros": [],
+ "features": [
+  {
+   "name": "Chordal Hold, with thumbs exempt (the exemption is C)",
+   "config": "#define CHORDAL_HOLD\n// keymap.c (C): mark the thumbs '*' so the layer thumbs can chord with either hand\nconst char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM = LAYOUT_voyager(\n  'L','L','L','L','L','L',  'R','R','R','R','R','R',\n  'L','L','L','L','L','L',  'R','R','R','R','R','R',\n  'L','L','L','L','L','L',  'R','R','R','R','R','R',\n  'L','L','L','L','L','L',  'R','R','R','R','R','R',\n                 '*','*',  '*','*');",
+   "why": "A home-row mod pressed with another key on the same hand types as a letter, which removes most rolling misfires such as 'as' turning into ⌃s. Several mods on the same hand can still be held together, for example J+K for ⇧⌘. Without the '*' exemption, holding Space for NAV and then pressing ⇧ on F, or Shift on F plus Tab, would count as a same-hand roll."
+  },
+  {
+   "name": "Flow Tap, with Shift exempt (the per-key rule is C)",
+   "config": "#define FLOW_TAP_TERM 150\n// keymap.c (C)\nuint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_keycode) {\n  switch (keycode) {\n    case LSFT_T(KC_F):\n    case RSFT_T(KC_J):\n      return 0;  // Shift: never force a tap\n  }\n  return (is_flow_tap_key(keycode) && is_flow_tap_key(prev_keycode)) ? FLOW_TAP_TERM : 0;\n}",
+   "why": "If a home-row mod (or Space/NAV) is pressed within 150 ms of the previous letter, it is always a tap, so fast typing never fires a modifier and letters arrive without delay. Shift is exempt so capitals right after a space, and PascalCase such as HashMap, still work at full speed. Bspc/SYM, Tab/NUM and Enter/FUN aren't covered by Flow Tap by default, so a symbol right after a letter, as in foo(, is still instant."
+  },
+  {
+   "name": "Permissive Hold, plus Hold On Other Key Press for NUM (C)",
+   "config": "#define TAPPING_TERM 200\n#define PERMISSIVE_HOLD\n#define HOLD_ON_OTHER_KEY_PRESS_PER_KEY\n// keymap.c (C)\nbool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {\n  return keycode == LT(1, KC_TAB);  // NUM thumb\n}",
+   "why": "Permissive Hold lets a held layer or mod work as soon as you press and release another key inside it, so you don't have to wait 200 ms for each symbol. NUM also uses Hold On Other Key Press: if you let go of the thumb before the digit, you still get the digit and not Tab+letter, which in Slack would move focus. Space keeps plain Permissive Hold because you roll from Space into letters all the time."
+  },
+  {
+   "name": "Quick Tap Term",
+   "config": "#define QUICK_TAP_TERM 120",
+   "why": "Tap and then quickly hold a key to auto-repeat it: Bspc on the SYM thumb, or j in Vim, now that J is also Shift. A slower tap-then-hold still gives the modifier."
+  },
+  {
+   "name": "Tap-only combos (C)",
+   "config": "COMBO_ENABLE = yes            # rules.mk\n#define COMBO_TERM 40\n#define COMBO_MUST_TAP_PER_COMBO\n// keymap.c (C)\nbool get_combo_must_tap(uint16_t index, combo_t *combo) { return true; }",
+   "why": "Both combos use home-row mod keys. Tap-only means a held J+K or F+J falls through to the modifiers, so the combos never block ⇧⌘ or ⇧⇧ chords."
+  },
+  {
+   "name": "Caps Word",
+   "config": "CAPS_WORD_ENABLE = yes        # rules.mk\n#define CAPS_WORD_IDLE_TIMEOUT 3000",
+   "why": "Rust constants and enum-style identifiers are SCREAMING_SNAKE_CASE. Caps Word keeps going through _ (the SYM thumb) and digits, and stops by itself. You can turn it on from the F+J combo or the CapsW key on NAV."
+  },
+  {
+   "name": "Key override: Shift+; sends ? (C)",
+   "config": "KEY_OVERRIDE_ENABLE = yes     # rules.mk\n// keymap.c (C)\nconst key_override_t shift_scln_ques = ko_make_basic(MOD_MASK_SHIFT, KC_SCLN, KC_QUES);\nconst key_override_t *key_overrides[] = { &shift_scln_ques };",
+   "why": "Puts ? back on its QWERTY spot (Shift plus the bottom-right pinky key) for chat questions and Rust's ? operator, without using up a SYM slot. Shift+; was only a second copy of the : on the home row."
+  },
+  {
+   "name": "Layer Lock (already enabled)",
+   "config": "LAYER_LOCK_ENABLE = yes       # rules.mk (already set)\nQK_LLCK on NUM (G) and MOUSE (B)",
+   "why": "Lock NUM for long runs of numbers and MOUSE for long pointer sessions, without holding a thumb."
+  },
+  {
+   "name": "Remove Tap Dance",
+   "config": "TAP_DANCE_ENABLE = no         # rules.mk; delete DANCE_0 and its handlers",
+   "why": "⌘1 and ⌘2 (and ⌘3 to ⌘9) are now ⌘ plus a digit on NUM. The double-tap timing delay goes away, along with about 60 lines of generated C."
+  }
+ ],
+ "missing": [
+  "F1-F12. There are none today, and VS Code needs F2 (rename), F12 (go to definition), F8 (next problem) and the debugger keys.",
+  "Backspace on a thumb",
+  "Shift on the home row (F and J)",
+  "Modifiers on NAV, NUM, SYM, FUN and MOUSE (⇧/⌥/⌘+arrows, ⌘+digit, ⌘-click, ⌥-click to add a cursor)",
+  "Caps Word for SCREAMING_SNAKE_CASE constants and acronyms",
+  "Forward Delete",
+  "Clipboard keys on NAV and MOUSE",
+  "VS Code Back and Forward (⌃- and ⌃⇧-)",
+  "Esc without leaving the home row (J+K)",
+  "Tap-hold tuning (Chordal Hold, Flow Tap, Permissive Hold). Today everything runs on QMK defaults.",
+  "Layer Lock for NUM",
+  "Screenshot to the clipboard (⌃⌘⇧4), for pasting into chat"
+ ],
+ "risks": [
+  "This is a big relearn. Every thumb except Space changes its job, digits become a numpad, and SYM is new. Expect two to four weeks of slower typing, and longer before your symbol speed in Rust catches up.",
+  "Esc is a combo now. It fires when you release J+K, and you have to press both within 40 ms. Years of reaching for a corner or thumb Esc will pull at you at first.",
+  "Shift on the home row is new for you. Flow Tap is off for F and J on purpose, so that capitals work, which leaves those two protected only by Chordal Hold and Permissive Hold. A lingering index finger can produce a stray capital (in Vim normal mode, a stray O or J).",
+  "Flow Tap on Space/NAV means you have to pause about 150 ms after a letter before holding Space for arrows. If you don't, you get a space.",
+  "Enter shares its key with the FUN hold. If you let go of the thumb before the F-key during a quick FUN press, you get Enter plus a letter, which sends a chat message. Hold FUN deliberately, or move FUN somewhere else if it bites.",
+  "Bspc shares its key with the SYM hold. If you let go of the thumb before the symbol key, you get Backspace plus a letter. It's harmless and easy to see, but it will happen while you learn.",
+  "$ % ^ ~ now take three keys (⇧ plus a digit on NUM, or ⇧ plus ` on SYM).",
+  "⌘⇧E, ⌘⇧H, the copy-path keys, ⌘1/⌘2 and ⌥Space lose their own keys and become home-row chords, so each takes one key more than today.",
+  "In Vim, holding j to repeat now needs a tap first and then a hold, because J is Shift. Holding Space+J for repeated ↓ works too.",
+  "Chordal Hold for the thumbs, per-key Flow Tap, tap-only combos and the key override all need custom C, which Oryx can't express. They live in this repo's custom QMK merge, and you need to check they survive each Oryx re-export.",
+  "The mouse layer assumes your left hand is free for modifiers. If the Navigator is on the left half, ⌘-click still works, but you need to hold K (⌘) before moving the ball.",
+  "The outer columns go dark. If that's too abrupt, put Esc, Bspc and Tab back in their old spots for two weeks as training wheels, then remove them.",
+  "' is still on an outer column (one sideways pinky reach), on purpose."
+ ]
+}
