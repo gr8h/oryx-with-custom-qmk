@@ -1,0 +1,125 @@
+{
+ "expert": "Ergonomics / RSI specialist",
+ "lens": "Keep finger travel, pinky load, same-hand thumb chords and static holds low for 8+ hours a day of chat and Rust.",
+ "layers": [
+  {
+   "layer": "Base",
+   "support": [
+    "In keyboard.json, L-outer and R-outer sit 1u closer to the hand than the inner thumb keys. Space (the most frequent tap) and the user's Esc/⇧ therefore get the shortest thumb travel.",
+    "OS⇧ is a one-shot key, so capitals typed from the left pinky need no held key. It is the cheapest way to capitalise right-hand letters such as 'I'.",
+    "There are only three home-row mods per hand and none on the index fingers, so the fastest fingers never wait on hold logic. With Chordal Hold, ⌘ on D pairs with right-hand letters and ⌘ on K with left-hand letters, so every shortcut is a cross-hand chord.",
+    "Leader, Caps Word and the screenshot key are rare enough that a two-row reach to the top row is acceptable."
+   ],
+   "changes": [],
+   "verdict": "Keep it as it is. Its ergonomic costs come from the fixed keys (Bspc in the top-right corner, `=` in the bottom-right corner, ⌃ on the pinkies), and only the tap-hold config can soften them."
+  },
+  {
+   "layer": "Numbers + IDE",
+   "support": [
+    "The left thumb holds while the right index, middle and ring fingers type on a 3x3 numpad. That is cross-hand, and all the digits sit in the strong columns.",
+    "With plain ⌃⌥⌘ on A S D, ⌘+digit is thumb + middle finger + one right-hand tap. That is lighter than the old tap dance's timed double tap.",
+    "Layer Lock on B removes the static thumb hold during long number entry.",
+    "`/` stays in its QWERTY spot and `-` is on the index finger, so paths and CLI flags (`--release`) can be typed without leaving the layer."
+   ],
+   "changes": [
+    {
+     "key": "Numbers + IDE, R-outer thumb (base R-outer is unchanged)",
+     "from": "(transparent: Esc/⇧)",
+     "to": "0",
+     "why": "0 is the most-used digit in code (0, 10, 0x00, [0]), and N is the index finger's worst spot (sideways and down). The right thumb is free on this layer, nothing here needs Esc or Shift, and R-inner stays transparent for the tri-layer; keep 0 on N as well while the user adapts."
+    },
+    {
+     "key": "Numbers + IDE, left bottom, C position",
+     "from": "⌥⌘C",
+     "to": "⌘⇧P",
+     "why": "The command palette is the most-used shortcut on this layer, and on Z it is the widest same-hand span: the pinky goes down to the bottom row while the thumb holds the inner key. On C it is a middle-finger tap, and 'C for Command palette' is still mnemonic."
+    },
+    {
+     "key": "Numbers + IDE, left bottom, Z position",
+     "from": "⌘⇧P",
+     "to": "⌥⌘C",
+     "why": "Copy path is rare, so it can take the pinky slot, and it sits next to Copy relative path on X."
+    }
+   ],
+   "verdict": "This is a good layer. Move 0 onto the free right thumb and move the palette off the pinky."
+  },
+  {
+   "layer": "Symbols",
+   "support": [
+    "With SYM on the right thumb, the fixed left half (`( ) [ ] < > ! & ? #`, most of Rust's symbols) is now cross-hand instead of same-hand.",
+    "Moving SYM off Space takes Flow Tap out of the symbol path. `my_var` and `␣{` no longer misfire.",
+    "The `->` and `=>` macros on the index and middle top row turn two-key symbol sequences into a single chord.",
+    "With no duplicates, each symbol has exactly one finger path, which cuts down on hesitation and correction keystrokes."
+   ],
+   "changes": [],
+   "verdict": "Keep it. The remaining cost is that `_ { } \" ->` are same-hand with the right thumb, which the fixed left half makes unavoidable."
+  },
+  {
+   "layer": "Nav",
+   "support": [
+    "The arrows sit opposite the holding thumb and ⌃⌥⌘⇧ are on the left home row. Selection (Space + F + arrows) is then a chord with both hands at rest and no reaching.",
+    "Undo, Cut, Copy and Paste on Z X C V copy the Mac ⌘ posture and need only the thumb, not a home-row mod plus a letter.",
+    "With the VS Code and media keys gone, every Nav key is within one row of home.",
+    "Enter on R-inner confirms a menu item without the right hand leaving the arrows. Del on the Bspc key matches the Mac's fn+⌫."
+   ],
+   "changes": [
+    {
+     "key": "Nav, left home, G position",
+     "from": "--",
+     "to": "LLock",
+     "why": "Reading code, scrolling diffs and long selections otherwise keep the left thumb held for minutes at a time. G is a sideways index reach, which suits a rare key, and it is in the same column as LLock on Numbers (B)."
+    }
+   ],
+   "verdict": "Lean and well placed. Add Layer Lock so that long navigation is not a static thumb hold."
+  },
+  {
+   "layer": "F-keys + media",
+   "support": [
+    "The F-keys mirror the numpad, so there is no new map to learn. Holding both reach thumbs is acceptable for occasional keys.",
+    "With ⇧⌘⌥⌃ on the right home row, ⇧F12 and ⌥F12 are cross-hand chords.",
+    "Boot and Lock sit in the corners behind a two-thumb hold, which makes them very hard to hit by accident."
+   ],
+   "changes": [
+    {
+     "key": "F-keys, left bottom, B position",
+     "from": "--",
+     "to": "LLock",
+     "why": "Without it, a debug session (F10 step over, F11 step into, F5 continue) means holding both inner thumbs while the pinky reaches F10 and F11. It needs the C guard in the config section so the tri-layer does not turn off a locked F layer."
+    }
+   ],
+   "verdict": "Fine for occasional use. Add Layer Lock for bursts of debugging."
+  }
+ ],
+ "thumbs": {
+  "support": [
+   "Each thumb carries one layer hold plus one other role. The long holds are split (NAV on the left, SYM on the right), so neither thumb holds all day.",
+   "Space and Esc/⇧ are on the home thumb keys. A NUM tap that leaks through is a harmless newline, and a leaked SYM tap is a Tab, not a sent message.",
+   "Real Enter (hold Space + tap R-inner) is a two-thumb chord across both hands, so neither hand strains. With permissive hold it is also fast."
+  ],
+  "concerns": [
+   "SYM is the busiest hold for Rust, and it sits on R-inner, which is 1u further toward the centre and 0.25u lower than R-outer. The thumb therefore stretches for every symbol, so watch for soreness at the base of the thumb.",
+   "Every message send is a two-thumb chord. Flow Tap also makes Space a tap if it comes within 150 ms of the last letter, which gives ' ' + Tab instead of Enter, so the user must pause briefly before sending.",
+   "Some same-hand thumb+finger chords remain: Shift + right-hand capitals (prefer OS⇧ for 'I'), SYM + `_ { } \"`, NUM + the IDE keys, and NAV + the clipboard keys.",
+   "The F layer needs both reach thumbs held at once. That is fine for rare keys, and it is why the layer needs Layer Lock."
+  ]
+ },
+ "config": [
+  "CHORDAL_HOLD with an explicit chordal_hold_layout: 'L' and 'R' for the letter keys and '*' for all four thumb keys. Every thumb has same-hand content (Shift + 'I', SYM + `{`, NAV + ⌘C, NUM + IDE keys), and without '*' those chords resolve as taps, for example Esc + i.",
+  "PERMISSIVE_HOLD globally, which the QMK docs recommend together with Chordal Hold. A key pressed and released inside a hold counts as a chord at once, while rolls stay taps.",
+  "HOLD_ON_OTHER_KEY_PRESS_PER_KEY, returning true only for the SYM/Tab thumb. A rolled symbol should never leak a Tab, which moves focus in Slack and browsers, and Tab almost never overlaps the next key.",
+  "TAPPING_TERM 200 with TAPPING_TERM_PER_KEY: 150 for Esc/⇧, 230 for the ring and pinky home-row mods (A, S, L, :), and 200 for the rest. A slow Esc that becomes a lone Shift is harmless, but a rolled capital that leaks Esc can stop a Claude Code run; ring and pinky fingers are slower to lift.",
+  "QUICK_TAP_TERM_PER_KEY: 0 for all four thumbs, so Tab-to-accept then `(`, newline then `1.`, and Esc then ⇧A in Vim give the hold instead of auto-repeat. Use 120 for the home-row mods so that holding `l` in Vim still repeats.",
+  "FLOW_TAP_TERM 150 with a get_flow_tap_term that returns 0 for the ⇧⏎/NUM key. Oryx dual-function keys are LT(layer, letter) (DUAL_FUNC_0 is LT(3, KC_X)), so the default would treat NUM as a letter and type a newline instead of activating NUM after 'v' or '␣'. Keep 150 for Space and the home-row mods, and drop Space to 120 if sent messages come out as ' ' + Tab.",
+  "(C) In layer_state_set_user, call update_tri_layer_state(state, NUM, SYM, FKEYS) only when !is_layer_locked(FKEYS). Otherwise, releasing the thumbs turns off a locked F layer.",
+  "DOUBLE_TAP_SHIFT_TURNS_ON_CAPS_WORD: the firmware accepts OSM(MOD_LSFT) for this, and ONESHOT_TAP_TOGGLE is unset, so there is no conflict. Double-tapping the left OS⇧ then starts SCREAMING_CASE without the two-row reach to the CW key."
+ ],
+ "warnings": [
+  "The right pinky is the most heavily loaded finger: Bspc in the top-right corner (fixed), then ', :/⌃, ; and P, and `=` in the bottom corner, which is the pinky's worst spot for a key Rust uses constantly. Pain on the outer forearm (little-finger side) is the first sign to watch for.",
+  "⌃ on both pinkies (A and :) carries Vim's ⌃D, ⌃U, ⌃W and ⌃O plus the terminal's ⌃C and ⌃R. Long pinky holds are a classic RSI route, so keep them short and use the opposite-hand pinky, which Chordal Hold enforces.",
+  "`_` in snake_case is the most repeated symbol in Rust, and it is now a same-hand chord: the right thumb on the reach key plus a sideways index reach to H. If the right thumb or index finger gets sore, move `_` first.",
+  "`\"` sits on the outer pinky key while the right thumb holds the inner key, which is the widest same-hand span on the board. OS⇧ then `'` is a cross-hand alternative.",
+  "Quick fix (⌘. on Q) is a pinky top-row reach while the thumb is on the inner key. For Rust's frequent quick fixes, holding D (⌘) on Base and tapping `.` is cross-hand and easier.",
+  "Selecting by word on Nav (Space + ⌥ on S + ⇧ on F + arrows) holds three keys at once on the left hand. That is fine in short bursts but tiring during long refactors.",
+  "Expect 2 to 3 weeks of slower, tenser typing while the new thumb roles settle. That tension is a strain risk in itself, so take breaks and don't push for speed."
+ ]
+}
