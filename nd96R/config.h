@@ -51,3 +51,21 @@
 #undef ENABLE_RGB_MATRIX_SPLASH
 #undef ENABLE_RGB_MATRIX_MULTISPLASH
 #undef ENABLE_RGB_MATRIX_SOLID_MULTISPLASH
+
+// ---------------------------------------------------------------------------
+// Custom QMK settings (logic in custom_qmk.c, design in docs/layout-review/)
+// In Oryx, leave per-key tapping terms, Chordal Hold, Flow Tap and Permissive
+// Hold unset: they are configured here, and Oryx would generate duplicates.
+// ---------------------------------------------------------------------------
+#undef TAPPING_TERM
+#define TAPPING_TERM 200
+#define TAPPING_TERM_PER_KEY
+#define PERMISSIVE_HOLD_PER_KEY
+#define HOLD_ON_OTHER_KEY_PRESS_PER_KEY
+#undef QUICK_TAP_TERM
+#define QUICK_TAP_TERM 120
+#define QUICK_TAP_TERM_PER_KEY
+#define CHORDAL_HOLD
+#define FLOW_TAP_TERM 150
+#define DOUBLE_TAP_SHIFT_TURNS_ON_CAPS_WORD
+#define LEADER_NO_TIMEOUT

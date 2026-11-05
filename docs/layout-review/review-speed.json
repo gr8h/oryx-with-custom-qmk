@@ -1,0 +1,128 @@
+{
+ "expert": "Speed-typing expert (150+ WPM typist and layout analyst)",
+ "lens": "WPM and accuracy on this user's real text (Rust snake_case, Vim and tmux commands, shell lines, fast chat), measured in same-finger bigrams, roll tolerance, tap-hold misfires and keystrokes per symbol.",
+ "layers": [
+  {
+   "layer": "Base",
+   "support": [
+    "Shift on a thumb and only ⌃⌥⌘ on the home row avoid the worst home-row-mod failure (Shift rolls in prose), and Chordal Hold makes every shortcut a cross-hand chord.",
+    "`:` on the pinky home turns `::` into two home-row taps, and Flow Tap keeps both as taps in flow because the Oryx placeholder taps as a letter.",
+    "⇧; → ? at the ANSI slash spot puts `?` where Mac hands expect it, at no extra keystrokes.",
+    "⇧⏎ as a single thumb tap is the cheapest possible newline, and it can never send a half-written message."
+   ],
+   "changes": [],
+   "verdict": "Keep it as it is: the base is already fast, and the remaining speed gains are in the tap-hold settings, not the key positions."
+  },
+  {
+   "layer": "Numbers + IDE",
+   "support": [
+    "Digits on the right under a left-thumb hold are opposite-hand, and the 789/456/123 grid is the numpad your hands already know.",
+    "Transparent `=` and Bspc mean `+=`, `-=`, `==` and digit fixes happen without lifting the thumb, and `/` at the ANSI spot keeps `//` comments on muscle memory.",
+    "Keeping 0 on N rather than on a thumb is right: on R-outer, a rolled single `0` (NUM thumb released first) would leak ⇧⏎ + Esc, which throws Vim out of insert mode.",
+    "R-inner should stay transparent even without the tri-layer, so that a NUM→SYM roll (`u8>`, `0]`, `1)`) reaches SYM, which outranks NUM.",
+    "Dropping the ⌘1/⌘2 tap dance removes a tap-dance timeout; ⌘ on D plus a digit is a plain chord."
+   ],
+   "changes": [
+    {
+     "key": "Numbers, left top Q and left bottom B",
+     "from": "Q ⌘. (quick fix), B LLock",
+     "to": "Q LLock, B ⌘. (B for light-bulb)",
+     "why": "`git checkout -b`, `0b1010` and `64bit` roll straight from a NUM key into B and would lock the layer, so everything typed after it becomes IDE commands. A q almost never follows a digit or `-`, and a stray ⌘. only opens the quick-fix menu."
+    }
+   ],
+   "verdict": "A fast numpad whose real risk is the thumb still being down when the next letter lands on the left-hand IDE keys, so pair it with the NUM guard in config."
+  },
+  {
+   "layer": "Symbols",
+   "support": [
+    "Taking SYM off Space is the draft's biggest speed fix: Space keeps Flow Tap, and `_` or `(` mid-word no longer competes with the prose key.",
+    "With the thumb on the right, `( ) [ ] < > & ! #` are opposite-hand chords, the fastest layer geometry.",
+    "`->` and `=>` as one-chord macros save a keystroke each on Rust's two most common digraphs.",
+    "The transparent bottom right (`m , . ; =`) lets `);`, `),`, `).`, `!=`, `<=` and `)?;` flow with the thumb still down."
+   ],
+   "changes": [
+    {
+     "key": "Symbols, left home A ↔ right home H",
+     "from": "A `?`, H `_`",
+     "to": "A `_`, H `?`",
+     "why": "On the right index, `_` forms same-finger bigrams with n, m, u, y and j in about 30% of Rust snake_case joins (`get_mut`, `fn_name`, `try_into`, `is_none`). On the left pinky only q and z collide (under 1%), `_a` is a cheap same-key repeat, `_` becomes opposite-hand to the SYM thumb, `?` stays on the layer, and `)?;` is still one SYM hold."
+    },
+    {
+     "key": "Symbols, right top O and P, right bottom N",
+     "from": "--",
+     "to": "\"\" (transparent)",
+     "why": "If the thumb is still down after `_`, a `--` swallows the next letter (`unwrap_or` → `unwrap_r`, `_ptr`, `_name`). Transparent keys let o, p and n through, and on a SYM→NUM overlap N falls through to NUM's 0, so `[0]` survives."
+    }
+   ],
+   "verdict": "The structure is right, and two small edits cut `_` same-finger bigrams sharply and make the layer tolerate a late thumb release."
+  },
+  {
+   "layer": "Nav",
+   "support": [
+    "Plain ⌃⌥⌘⇧ on the left home (no tap-hold) make ⌥⇧→ word-select and ⌘⇧← line-select instant once Space is held.",
+    "Undo, Cut, Copy, Paste and Redo on Z X C V B keep the Mac shapes, so editing bursts need no relearning.",
+    "Enter on R-inner next to the arrows lets you pick a menu item with `↓↓⏎` without releasing anything.",
+    "A lean layer suits a Space-held layer: fewer live keys means fewer surprises from a lingering Space."
+   ],
+   "changes": [
+    {
+     "key": "Nav, right top Y U I O (tmux)",
+     "from": "Right Option ⌥P/⌥H/⌥L/⌥N (RALT, as in the current keymap)",
+     "to": "Left Option ⌥P/⌥H/⌥L/⌥N (LALT)",
+     "why": "Many macOS terminals keep Right Option for special characters, so ⌥H can type ˙ instead of reaching tmux. Left Option is the side terminals usually map to Meta."
+    }
+   ],
+   "verdict": "Good and lean; only the tmux modifier side needs fixing."
+  },
+  {
+   "layer": "F-keys + media",
+   "support": [
+    "Expert A's block mirrors the numpad, so F5 sits where 5 is and F12 on the pinky top, with nothing new to learn.",
+    "Mods on the right home give one-hand ⇧F12 and ⌘+F-key chords without home-row-mod timing.",
+    "Boot and Lock in the far corners can't be reached by a roll."
+   ],
+   "changes": [
+    {
+     "key": "F-keys activation",
+     "from": "tri-layer: hold NUM + SYM (update_tri_layer_state)",
+     "to": "chord: L-inner + R-inner pressed within 35 ms → MO(F) (combo; C if Oryx can't output it)",
+     "why": "In Rust the inner thumbs overlap constantly (`[0]`, `(1, 2)`, `Vec<u8>`, `1_000`), and with a plain tri-layer the digits land on ⌘⇧4, RGB and Mute while brackets land on F2 (rename), F5 (start debugging) and F9 (breakpoint). A 35 ms press window only fires when you press both thumbs together on purpose."
+    }
+   ],
+   "verdict": "The content is right; change only how you reach it."
+  }
+ ],
+ "thumbs": {
+  "support": [
+   "All four tap jobs suit speed: Space and Shift sit on the two resting thumbs, and each layer's content is on the opposite hand from its thumb.",
+   "A leaked NUM tap gives ⇧⏎, which in chat apps is only a newline, never a send.",
+   "Esc on a thumb is the fastest Esc a Vim user can have, and Shift on the same thumb keeps capitals off the pinky."
+  ],
+  "concerns": [
+   "As specified, real Enter (hold Space + R-inner) only works if Space stays down past the 200 ms tapping term, so a quick chord comes out as space + Tab. It also needs a pause after the last letter, or Flow Tap forces a space: about 350 ms per send or shell command.",
+   "The plain NUM+SYM tri-layer turns common Rust rolls into F-key and media misfires (see F-keys).",
+   "Esc/⇧ is the touchiest key: with permissive hold, a capital whose thumb lifts before the letter becomes Esc + lowercase, which runs commands in Vim insert mode. Hold the thumb through the letter, or use OS⇧ when unsure.",
+   "Optional: if you ever relax 'real Enter only on a layer', tapping the same inner-thumb chord could send Enter in one motion, and a single thumb tap still couldn't send."
+  ]
+ },
+ "config": [
+  "`TAPPING_TERM 200` with `TAPPING_TERM_PER_KEY`: 160 ms for Esc/⇧, so a lingering capital roll resolves as Shift (real Esc taps last under 100 ms), and 200 ms for everything else.",
+  "`PERMISSIVE_HOLD_PER_KEY`: on for A S D K L :, ⇧⏎/NUM, Tab/SYM and Esc/⇧. Don't copy Expert B's `false` for Esc/⇧: with it off, any capital typed in under 200 ms comes out as Esc + lowercase (the QMK docs' 'ax' case).",
+  "Space/NAV: permissive hold off, except when the nested key is R-inner (C: in `pre_process_record_user`, which runs before tap-hold buffering, record whether the last press was `LT(SYM, KC_TAB)`, then return that flag from `get_permissive_hold` for the Space key). Enter then fires when R-inner is released, and letters inside a lingering Space still type as spaces.",
+  "`HOLD_ON_OTHER_KEY_PRESS_PER_KEY`: true only for Tab/SYM, so a rolled symbol never leaks a Tab; Tab is rarely overlapped because you pause to read the completion. Never set it for NUM, where an in-flow newline overlap would fire IDE keys.",
+  "`CHORDAL_HOLD` with all four thumbs set to '*' in `chordal_hold_layout`; otherwise right-hand capitals typed with the right Shift thumb (I, You, Ok) are forced to Esc.",
+  "Write `get_flow_tap_term` explicitly: 150 ms for A S D K L :, 120 ms for Space/NAV (permissive hold off already guards in-flow spaces, and a shorter window lets Enter or ⌥← follow typing sooner), and 0 for NUM, SYM and Esc/⇧. The default would treat Oryx's DUAL_FUNC placeholder for ⇧⏎/NUM (an LT with a letter tap) as a letter and force newlines into `u8` or `i32`.",
+  "`QUICK_TAP_TERM 120` on the home-row mods (keeps `kkkk` repeat in Vim), and 0 on every thumb, so ⇧⏎ followed quickly by a NUM hold gives `2.` for a chat list instead of auto-repeated newlines.",
+  "`COMBO_TERM 35` for the inner-thumb F chord. Add a NUM guard (C): a left-hand NUM key pressed within 150 ms of a right-hand NUM key turns NUM off and sends its base letter, so `-r`, `3rd` or `0x` can't fire IDE commands."
+ ],
+ "warnings": [
+  "Single-digit rolls (`u8`, `[0]`, `x2`) still leak a NUM tap if the thumb lifts first. In chat that's a stray newline, but in a default macOS terminal ⇧⏎ is CR, so it runs the half-typed command.",
+  "Without the NUM guard, a late thumb release fires IDE keys mid-word: `-r`/`3rd` → ⌘⇧H, `-t`/`4th` → terminal toggle, `-f` → ⌘⇧F, `-v` → ⌥Space, and `0x`/`-x` silently overwrite the clipboard with a file path.",
+  "`/` on NUM sits on the base `;` key, so `let n = 42;` with the thumb still down types `42/`. That's the price of keeping `//` at the ANSI spot.",
+  "`-` lives only on NUM, so hyphenated words, `- ` chat bullets and CLI flags are all layer chords and roll hazards.",
+  "Zero on N shares the index finger with 1, 4, 7, + and -, so `10`, `100`, `40` and `70` are same-finger bigrams; accept it, because a thumb zero leaks Esc on rolls.",
+  "`=` on the bottom outer pinky is the slowest base spot for one of Rust's most frequent symbols; Expert B's base fixes it there, so it's a ceiling, not a bug.",
+  "In VS Code, ⇧⏎ with the suggest widget open accepts the alternative suggestion instead of inserting a newline, and in find bars it jumps to the previous match.",
+  "The `_`/`?` swap is the one change that touches years of muscle memory; expect a week or two of slower snake_case before it pays off."
+ ]
+}

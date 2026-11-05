@@ -1,0 +1,472 @@
+<title>Voyager Layout Review</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Atkinson+Hyperlegible+Next:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one layer per tab. Each version (Current, A, B) is a card: a large labelled keyboard plus a "what these keys do" list. A compare bar shows the clicked key across all three versions. */
+:root{
+  --bg:#eef0f4; --panel:#ffffff; --ink:#1b2130; --muted:#5d6577; --line:#d5d9e2; --case:#2a2f3b;
+  --accent:#3559d6; --a:#0f8a6a; --b:#b4531a; --sel:#3559d6;
+  --k-alpha:#dfe8fb; --k-mod:#d6f0dc; --k-num:#fbdde8; --k-sym:#fbf0c9; --k-edit:#e4e7ee; --k-nav:#fbd9d4;
+  --k-ide:#d3eeee; --k-media:#fde3c8; --k-mouse:#e8dcfa; --k-sys:#e7e2d6; --k-fn:#dcdcf7; --k-macro:#f6dcf2;
+  --k-none:#3a404d; --k-ink:#1b2130; --chg:#e0336b; --chip:#eef1f6;
+  --f-display:"Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-body:"Atkinson Hyperlegible Next", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+  --key:56px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#141821; --panel:#1c212c; --ink:#e6e9f0; --muted:#9aa3b5; --line:#2f3646; --case:#0c0f15;
+  --accent:#8aa4ff; --a:#4fd1a8; --b:#f0975c; --sel:#8aa4ff;
+  --k-alpha:#2a3956; --k-mod:#24452f; --k-num:#4d2737; --k-sym:#4a4120; --k-edit:#323846; --k-nav:#52302b;
+  --k-ide:#1f4545; --k-media:#4f3820; --k-mouse:#3b2d55; --k-sys:#3e3a30; --k-fn:#30305a; --k-macro:#4a2a47;
+  --k-none:#1c2029; --k-ink:#eef1f7; --chg:#ff6b9a; --chip:#262c39; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#141821; --panel:#1c212c; --ink:#e6e9f0; --muted:#9aa3b5; --line:#2f3646; --case:#0c0f15;
+  --accent:#8aa4ff; --a:#4fd1a8; --b:#f0975c; --sel:#8aa4ff;
+  --k-alpha:#2a3956; --k-mod:#24452f; --k-num:#4d2737; --k-sym:#4a4120; --k-edit:#323846; --k-nav:#52302b;
+  --k-ide:#1f4545; --k-media:#4f3820; --k-mouse:#3b2d55; --k-sys:#3e3a30; --k-fn:#30305a; --k-macro:#4a2a47;
+  --k-none:#1c2029; --k-ink:#eef1f7; --chg:#ff6b9a; --chip:#262c39; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;margin:0}
+code,.mono,.k,.chip,pre,.cmp-cell .big{font-variant-ligatures:none;font-feature-settings:"calt" 0,"liga" 0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1440px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,4vw,40px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:24px} h3{font-size:17px}
+p{margin:0;max-width:78ch}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{color:var(--muted);font-size:16.5px}
+header{display:flex;flex-direction:column;gap:10px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.grid2>*{min-width:0}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+li{max-width:85ch}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+.tag{display:inline-flex;align-items:center;font-family:var(--f-mono);font-size:11px;padding:1px 8px;border-radius:99px;border:1px solid currentColor;letter-spacing:.04em;font-weight:700}
+.tA{color:var(--a)} .tB{color:var(--b)} .tC{color:var(--muted)} .tN{color:var(--accent)}
+
+/* toolbar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs a{font-family:var(--f-display);font-weight:700;font-size:14.5px;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--panel);padding:6px 14px;border-radius:8px}
+.tabs a[aria-current="page"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.opts{display:flex;gap:16px;flex-wrap:wrap;align-items:center;font-size:13.5px;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{font:inherit;font-size:13px;color:var(--ink);background:transparent;border:0;padding:5px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.opts label{display:flex;gap:6px;align-items:center;cursor:pointer;color:var(--ink)}
+
+/* layer view */
+.view{display:flex;flex-direction:column;gap:20px}
+.cmp{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;display:flex;flex-direction:column;gap:10px}
+.cmp-grid{display:grid;grid-template-columns:repeat(var(--nv,3),minmax(0,1fr));gap:14px}
+@media (max-width:760px){.cmp-grid{grid-template-columns:1fr}}
+.cmp-cell{display:flex;flex-direction:column;gap:3px;min-width:0}
+.cmp-cell .big{font-family:var(--f-display);font-weight:700;font-size:18px}
+.cmp-cell .desc{font-size:13.5px;color:var(--muted)}
+.versions{display:flex;flex-direction:column;gap:16px}
+.vcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.vcard.A{border-left:4px solid var(--a)} .vcard.B{border-left:4px solid var(--b)} .vcard.C{border-left:4px solid var(--muted)} .vcard.N{border-left:4px solid var(--accent)}
+.vhead{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.vhead h3{font-size:18px}
+.vhead span.act{font-size:13px;color:var(--muted)}
+.vbody{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:1200px){.vbody{grid-template-columns:minmax(0,1fr)}}
+.kbwrap{overflow-x:auto;padding-bottom:4px;max-width:100%}
+.gl{display:flex;flex-direction:column;gap:5px;font-size:13.5px;max-height:440px;overflow:auto;padding-right:4px}
+.gl h4{margin:0 0 2px;font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.gl button{all:unset;cursor:pointer;display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px;align-items:baseline;padding:3px 6px;border-radius:6px}
+.gl button:hover,.gl button:focus-visible{background:var(--chip)}
+.gl button.on{background:color-mix(in srgb, var(--sel) 16%, transparent)}
+.chip{font-family:var(--f-mono);font-size:12px;font-weight:700;background:var(--chip);border:1px solid var(--line);border-radius:5px;padding:1px 6px;justify-self:start;white-space:nowrap}
+.gl b{font-weight:700}
+.none-msg{color:var(--muted);font-size:14px}
+
+/* keyboard */
+.kb{background:var(--case);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px;width:max-content}
+.halves{display:flex;gap:calc(var(--key)*.55)}
+.half{display:grid;grid-template-columns:repeat(6,var(--key));gap:4px}
+.thumbs{display:flex;gap:calc(var(--key)*.55);margin-top:4px}
+.tside{width:calc(var(--key)*6 + 20px);display:flex}
+.tside.l{justify-content:flex-end} .tside.r{justify-content:flex-start}
+.tpair{display:flex;gap:4px}
+.tpair .k{width:calc(var(--key)*1.2)}
+.tpair.l{transform:translateX(calc(var(--key)*.12)) rotate(7deg);transform-origin:right top}
+.tpair.r{transform:translateX(calc(var(--key)*-.12)) rotate(-7deg);transform-origin:left top}
+.k{all:unset;box-sizing:border-box;width:var(--key);height:var(--key);border-radius:7px;background:var(--k-none);color:var(--k-ink);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;padding:2px}
+.k .top{font-family:var(--f-mono);font-size:9.5px;font-weight:500;opacity:.72;line-height:1.1;white-space:nowrap;max-width:100%;overflow:hidden}
+.k .main{font-family:var(--f-mono);font-weight:700;font-size:15px;line-height:1.05;max-width:100%;overflow:hidden}
+.k .main.word{font-family:var(--f-body);font-size:11.5px;font-weight:700;white-space:normal;overflow-wrap:normal;hyphens:none}
+.k .main.word.short{font-size:13.5px}
+.k .glyph{display:none}
+.k .h{font-family:var(--f-mono);font-size:9.5px;font-weight:500;opacity:.8;line-height:1.1;margin-top:2px;white-space:nowrap}
+.k.trns{background:transparent;border:1px dashed color-mix(in srgb, var(--muted) 45%, transparent)}
+.k.trns .main{opacity:.35;font-weight:500;font-size:12px}
+.k.trns .h{color:var(--muted);opacity:1}
+.k.none{opacity:.55}
+.k:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.c-alpha{background:var(--k-alpha)} .c-mod{background:var(--k-mod)} .c-num{background:var(--k-num)} .c-sym{background:var(--k-sym)}
+.c-edit{background:var(--k-edit)} .c-nav{background:var(--k-nav)} .c-ide{background:var(--k-ide)} .c-media{background:var(--k-media)}
+.c-mouse{background:var(--k-mouse)} .c-sys{background:var(--k-sys)} .c-fn{background:var(--k-fn)} .c-macro{background:var(--k-macro)}
+.showchg .k.chg{box-shadow:inset 0 0 0 2px var(--chg)}
+.k.sel{outline:3px solid var(--sel);outline-offset:1px;z-index:1}
+/* compact side-by-side view */
+.compact{--key:27px}
+.compact .versions{display:grid;grid-template-columns:repeat(var(--nv,3),max-content);gap:14px;overflow-x:auto}
+@media (max-width:1000px){.compact .versions{grid-template-columns:max-content}}
+@media (max-width:880px){.compact .versions{grid-template-columns:max-content}}
+.compact .vbody{grid-template-columns:max-content}
+.compact .gl{display:none}
+.compact .k .top{display:none}
+.compact .k .main{display:none}
+.compact .k .glyph{display:block;font-family:var(--f-mono);font-weight:700;font-size:10.5px;line-height:1;white-space:nowrap;max-width:100%;overflow:hidden}
+.compact .k .h{font-size:7.5px;margin-top:1px}
+.compact .k{border-radius:5px}
+@media (max-width:700px){ :root{--key:48px} .k .main{font-size:13px} .k .main.word{font-size:10px} .k .top,.k .h{font-size:8.5px} }
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:12.5px;color:var(--muted);align-items:center}
+.legend i{display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+.opinions{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
+.opinions>*{min-width:0}
+.op{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.op.A{border-top:3px solid var(--a)} .op.B{border-top:3px solid var(--b)} .op.S{border-top:3px solid var(--b)} .op.E{border-top:3px solid var(--a)} .op.U{border-top:3px solid var(--accent)}
+.op h3 .tag{margin-right:6px}
+.op li{font-size:14px}
+.why{font-size:14.5px}
+.note{font-size:14.5px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.tbl{overflow-x:auto}
+pre{font-family:var(--f-mono);font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;margin:4px 0 0;white-space:pre-wrap;overflow-x:auto}
+details summary{cursor:pointer}
+.verdict{border-left:4px solid var(--accent)}
+
+/* lights tab */
+.lt-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+.lt-ctrl{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px 18px}
+.lt-role{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.lt-role .sw{width:18px;height:18px;border-radius:5px;border:1px solid var(--line)}
+.lt-role b{font-size:13.5px} .lt-role small{grid-column:2 / span 2;color:var(--muted);font-size:12px;line-height:1.35}
+.lt-role select{font:inherit;font-size:13px;padding:3px 6px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.lt-role select:focus-visible,.lt-sl input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lt-sl{display:flex;gap:10px;align-items:center;font-size:13.5px;flex-wrap:wrap}
+.lt-pair{display:grid;grid-template-columns:repeat(2,max-content);gap:16px;overflow-x:auto;padding-bottom:4px}
+@media (max-width:980px){.lt-pair{grid-template-columns:max-content}}
+.lkb{background:#0e1015;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:5px;width:max-content;--lk:34px}
+.lkb .halves{gap:calc(var(--lk)*.55)} .lkb .half{grid-template-columns:repeat(6,var(--lk));gap:4px}
+.lkb .thumbs{gap:calc(var(--lk)*.55)} .lkb .tside{width:calc(var(--lk)*6 + 20px)}
+.lkb .tpair.l{transform:translateX(calc(var(--lk)*.12)) rotate(7deg);transform-origin:right top}
+.lkb .tpair.r{transform:translateX(calc(var(--lk)*-.12)) rotate(-7deg);transform-origin:left top}
+.lk{width:var(--lk);height:var(--lk);border-radius:6px;background:#1b1e26;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:10px;font-weight:700;color:#5d6472;overflow:hidden;white-space:nowrap;position:relative}
+.lkb .tpair .lk{width:calc(var(--lk)*1.2)}
+.lk span{max-width:100%;overflow:hidden;padding:0 1px;font-variant-ligatures:none;font-feature-settings:"calt" 0,"liga" 0}
+.lt-warn{border-left:4px solid var(--chg);background:var(--panel);border-radius:8px;padding:10px 14px;font-size:14px}
+.lt-ok{border-left:4px solid var(--a);background:var(--panel);border-radius:8px;padding:10px 14px;font-size:14px}
+.lt-out{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.lt-out code{background:var(--chip);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:12.5px;white-space:normal;overflow-wrap:anywhere;flex:1 1 300px}
+.lt-out button,.lt-btn{font:inherit;font-size:13px;padding:6px 12px;border-radius:7px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
+.lt-btn.sec{background:transparent;color:var(--ink);border-color:var(--line)}
+.lt-out button:focus-visible,.lt-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+@media (prefers-reduced-motion:no-preference){ .k{transition:box-shadow .15s, outline-color .15s} }
+.k, .k *, .chip, .gl b, .cmp-cell .big{font-variant-ligatures:none;font-feature-settings:"calt" 0,"liga" 0}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">ZSA Voyager · layout nd96R · macOS</div>
+    <h1>Voyager layout review</h1>
+    <p class="lede" id="lede"></p>
+  </header>
+  <div id="intro"></div>
+  <div class="bar">
+    <nav class="tabs" id="tabs" aria-label="Layers"></nav>
+    <div class="opts">
+      <span class="seg" role="group" aria-label="View">
+        <button type="button" id="v-detail" aria-pressed="true">Detailed, with labels</button>
+        <button type="button" id="v-compact" aria-pressed="false">Compact, side by side</button>
+      </span>
+      <label><input type="checkbox" id="chg" checked> Outline changed keys</label>
+      <span>Click any key to compare it across versions.</span>
+    </div>
+  </div>
+  <main id="main"></main>
+  <div class="legend" id="legend"></div>
+</div>
+
+<script>
+const DATA = {"versions": [{"key": "C", "label": "Current", "cls": "tC"}, {"key": "N", "label": "New", "cls": "tN"}], "groups": [{"slug": "base", "title": "Base", "layers": {"C": {"id": 0, "name": "Base", "activation": "default", "tap": [["Esc", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", ""], ["Tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Bspc"], ["OS⇧", "A", "S", "D", "F", "G", "H", "J", "K", "L", ":", "'"], ["Bspc", "Z", "X", "C", "V", "B", "N", "M", ",", ".", ";", "="], ["Space", "Enter", "Tab", "Esc"]], "hold": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "⌃", "⌥", "⌘", "", "", "", "", "⌘", "⌥", "⌃", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["SYM", "NAV", "NUM", "⇧"]], "cat": [["edit", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "trns"], ["edit", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "edit"], ["mod", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "sym", "sym"], ["edit", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "sym", "sym", "sym", "sym"], ["edit", "edit", "edit", "edit"]], "replaces": 0}, "N": {"id": 0, "replaces": 0, "name": "Base", "activation": "default", "tap": [["Esc", "--", "--", "--", "--", "Lead", "CW", "--", "--", "--", "--", "⌃⌘⇧4"], ["Tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Bspc"], ["OS⇧", "A", "S", "D", "F", "G", "H", "J", "K", "L", ":", "'"], ["Bspc", "Z", "X", "C", "V", "B", "N", "M", ",", ".", ";", "="], ["Space", "⇧⏎", "Tab", "Esc"]], "hold": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "⌃", "⌥", "⌘", "", "", "", "", "⌘", "⌥", "⌃", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["NAV", "NUM", "SYM", "⇧"]], "cat": [["edit", "none", "none", "none", "none", "macro", "macro", "none", "none", "none", "none", "sys"], ["edit", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "edit"], ["mod", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "sym", "sym"], ["edit", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "sym", "sym", "sym", "sym"], ["edit", "edit", "edit", "edit"]]}}, "note": "Expert B's base, with the thumbs reassigned the way you asked. The letters, the home-row mods, <code>:<\/code>, both Backspaces and Esc/⇧ are unchanged.", "reqHTML": "<div style='display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px'><div class='eyebrow'>Your requests, and how this layer answers them<\/div><ul><li><b>Shift and Esc on the thumb:<\/b> kept exactly as they are (right outer thumb, tap Esc, hold ⇧).<\/li><li><b>Space position:<\/b> kept (left outer thumb). Holding it now opens <b>Nav<\/b> instead of Symbols.<\/li><li><b>Newline on Base:<\/b> the left inner thumb now taps <b>⇧⏎<\/b>. Real <b>Enter<\/b> is <i>hold Space + tap the right inner thumb<\/i>.<\/li><li><b>Backspace:<\/b> unchanged, top right (the Mac spot) and bottom left.<\/li><li><b>Enter, Tab, Sym, Nav, Num moved,<\/b> for one reason: every layer's keys now sit under the hand opposite the thumb that holds it.<\/li><\/ul><\/div>", "reasonsHTML": "<div class='opinions'><div class='op S'><h3><span class='tag tB'>Speed<\/span>Speed-typing expert<\/h3><ul><li>Base needs no key moves. Shift on a thumb, plus only ⌃⌥⌘ on the home row, avoids the worst home-row-mod failure: Shift misfiring when you roll through words.<\/li><li><b>Moving Symbols off Space is the biggest speed win.<\/b> Today a fast <code>␣{<\/code> auto-repeats Space and types a <code>j<\/code>. Space now only holds Nav, which you use after a pause, not in the middle of a word.<\/li><li>⇧⏎ as one thumb tap is the cheapest newline possible, and it can never send a half-written message.<\/li><li><code>:<\/code> on the pinky home makes <code>::<\/code> two home-row taps, and ⇧; → <code>?<\/code> keeps <code>?<\/code> where Mac hands expect it.<\/li><\/ul><\/div><div class='op E'><h3><span class='tag tA'>Ergonomics<\/span>Ergonomics expert<\/h3><ul><li>Space and Esc/⇧ stay on the outer thumb keys, which are 1u closer to the hand than the inner ones (checked in the Voyager's geometry file). The two most-pressed thumb keys get the shortest travel.<\/li><li>The two long holds are split across the hands, Nav on the left thumb and Symbols on the right, so neither thumb holds all day.<\/li><li>There are no mods on the index fingers, so your fastest fingers never wait on hold timing.<\/li><li>The cost that's left comes from what you chose to keep: Backspace and <code>=<\/code> in the right pinky's corners. Watch for strain on the outer forearm, on the little-finger side.<\/li><\/ul><\/div><\/div><div class='op U'><h3><span class='tag tN'>My call<\/span>Where they disagreed<\/h3><ul><li><b>Real Enter (hold Space + tap the right inner thumb):<\/b> both experts warned that Flow Tap on Space would turn a quick send into a space and a Tab. I turn Flow Tap <b>off<\/b> for Space and add a small piece of custom code: Space counts as held as soon as the right inner thumb is tapped inside it. Sending fires right away, even straight after typing, and fast typing can't trigger Nav by accident.<\/li><\/ul><\/div>"}, {"slug": "numbers", "title": "Numbers + IDE", "layers": {"C": {"id": 1, "name": "Numbers", "activation": "hold R-inner thumb (Tab)", "tap": [["", "", "", "", "", "", "", "", "", "", "", "MyPC"], ["", "--", "--", "--", "--", "%", "^", "KP-", "KP+", "KP*", "KP/", ""], ["", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ""], ["", "--", "--", "--", "--", "--", "0", "--", "", "", "", ""], ["", "", "", ""]], "hold": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", ""]], "cat": [["trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "sys"], ["trns", "none", "none", "none", "none", "sym", "sym", "sym", "sym", "sym", "sym", "trns"], ["trns", "num", "num", "num", "num", "num", "num", "num", "num", "num", "num", "trns"], ["trns", "none", "none", "none", "none", "none", "num", "none", "trns", "trns", "trns", "trns"], ["trns", "trns", "trns", "trns"]], "replaces": 1}, "N": {"id": 1, "replaces": 1, "name": "Numbers + IDE", "activation": "hold L-inner thumb (tap = ⇧⏎)", "tap": [["", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", ""], ["", "LLock", "⌘\\", "⌘⇧E", "⌘⇧H", "⌃`", "+", "7", "8", "9", "*", ""], ["", "⌃", "⌥", "⌘", "⌘⇧F", "⌃⇧G", "-", "4", "5", "6", ".", ":"], ["", "⌥⌘C", "⌥⌘⇧C", "⌘⇧P", "⌥Spc", "⌘.", "0", "1", "2", "3", "/", ""], ["", "", "", ""]], "hold": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "NUM", "SYM", ""]], "cat": [["trns", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "trns"], ["trns", "sys", "ide", "ide", "ide", "ide", "sym", "num", "num", "num", "sym", "trns"], ["trns", "mod", "mod", "mod", "ide", "ide", "sym", "num", "num", "num", "sym", "sym"], ["trns", "ide", "ide", "ide", "sys", "ide", "num", "num", "num", "num", "sym", "trns"], ["trns", "trns", "trns", "trns"]]}}, "note": "Expert A's right-hand numpad with <code>/<\/code> added. The free left hand now holds your VS Code workspace keys, which come off Nav.", "reqHTML": "<div style='display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px'><div class='eyebrow'>Your requests, and how this layer answers them<\/div><ul><li><b>Expert A's numbers:<\/b> 789 / 456 / 123 on the right hand, held by the left thumb.<\/li><li><b>Division:<\/b> yes, it belongs here. Expert A left it out. <code>/<\/code> sits next to <code>*<\/code>, so <code>+ - * /<\/code> are all on this layer.<\/li><li><b>Use the free left hand for VS Code:<\/b> done. Explorer, Find all, Replace all, Git, Terminal, Split, Palette, Quick fix, Copy path and the launcher all moved here from Nav.<\/li><li><b>Your ⌘1/⌘2 tap dance:<\/b> replaced by holding ⌘ (D) and tapping a digit, which also gives you ⌘3–⌘9. The tap-dance delay goes away.<\/li><\/ul><\/div>", "reasonsHTML": "<div class='opinions'><div class='op S'><h3><span class='tag tB'>Speed<\/span>Speed-typing expert<\/h3><ul><li>The digits sit on the right under a left-thumb hold, which is the fastest geometry, and the 789/456/123 grid is a numpad your hands already know.<\/li><li>Backspace and <code>=<\/code> show through from Base, so <code>+=<\/code>, <code>==<\/code> and fixing a digit don't need the thumb lifted.<\/li><li>Moved Layer Lock to Q and Quick fix to B. <code>git checkout -b<\/code>, <code>0b1010<\/code> and <code>64bit<\/code> roll straight into B, which would have locked the layer.<\/li><li>Keep 0 on N, not on a thumb. A rolled single <code>0<\/code> on a thumb would leak Esc and throw Vim out of insert mode.<\/li><\/ul><\/div><div class='op E'><h3><span class='tag tA'>Ergonomics<\/span>Ergonomics expert<\/h3><ul><li>The numpad is cross-hand: thumb on the left, digits under the strong right index, middle and ring fingers.<\/li><li>⌘ + digit is now thumb + middle finger + one tap, which is lighter than the timed double tap.<\/li><li>Moved Palette from Z to C. It's the most-used key here, and Z was the widest same-hand stretch (pinky down a row while the thumb holds the inner key). Copy path, which you rarely use, takes Z.<\/li><li>Layer Lock takes the static thumb hold out of long number entry.<\/li><\/ul><\/div><\/div><div class='op U'><h3><span class='tag tN'>My call<\/span>Where they disagreed<\/h3><ul><li><b>Where 0 goes:<\/b> the ergonomics expert wanted it on the right outer thumb. That is your Esc/⇧ key, which you asked to keep the same, and the speed expert showed it leaks Esc. <b>0 stays on N.<\/b><\/li><li><b>VS Code key misfires:<\/b> I'm adding the speed expert's guard (custom code). If you hit a left-hand key within 150 ms of a digit, it types the letter instead of running a VS Code shortcut. Without it, <code>-r<\/code> typed with the thumb still down would open Replace all.<\/li><\/ul><\/div>"}, {"slug": "symbols", "title": "Symbols", "layers": {"C": {"id": 2, "name": "Symbols", "activation": "hold L-outer thumb (Space)", "tap": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "!", "@", "[", "]", "%", "^", "-", "+", "*", "/", ""], ["", "?", "&", "<", ">", "#", "_", "{", "}", "|", "\\", "\""], ["", "~", "`", "(", ")", "$", "0", "--", "", "", "", ""], ["", "", "", ""]], "hold": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", ""]], "cat": [["trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns"], ["trns", "sym", "sym", "sym", "sym", "sym", "sym", "sym", "sym", "sym", "sym", "trns"], ["trns", "sym", "sym", "sym", "sym", "sym", "sym", "sym", "sym", "sym", "sym", "sym"], ["trns", "sym", "sym", "sym", "sym", "sym", "num", "none", "trns", "trns", "trns", "trns"], ["trns", "trns", "trns", "trns"]], "replaces": 2}, "N": {"id": 2, "replaces": 2, "name": "Symbols", "activation": "hold R-inner thumb (tap = Tab)", "tap": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "!", "@", "[", "]", "%", "^", "->", "=>", "", "", ""], ["", "_", "&", "<", ">", "#", "?", "{", "}", "|", "\\", "\""], ["", "~", "`", "(", ")", "$", "", "", "", "", "", ""], ["", "", "", ""]], "hold": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "NUM", "SYM", ""]], "cat": [["trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns"], ["trns", "sym", "sym", "sym", "sym", "sym", "sym", "macro", "macro", "trns", "trns", "trns"], ["trns", "sym", "sym", "sym", "sym", "sym", "sym", "sym", "sym", "sym", "sym", "sym"], ["trns", "sym", "sym", "sym", "sym", "sym", "trns", "trns", "trns", "trns", "trns", "trns"], ["trns", "trns", "trns", "trns"]]}}, "note": "Your left-hand bracket block is unchanged. The layer is now held by the right thumb (Tab), so those symbols are cross-hand, and nothing on this layer duplicates another layer.", "reqHTML": "<div style='display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px'><div class='eyebrow'>Your requests, and how this layer answers them<\/div><ul><li><b>Kept in place:<\/b> <code>[ ]<\/code> <code>( )<\/code> <code>&lt; &gt;<\/code> <code>~<\/code> <code>`<\/code>, plus <code>! @ % &amp; # $<\/code>.<\/li><li><b>No repeats:<\/b> <code>+ - * /<\/code> and <code>0<\/code> are gone from here (they're on Numbers), and so is <code>=<\/code> (it's on Base).<\/li><li><b>Where's <code>?<\/code>:<\/b> on the right index home key (H). Both experts moved <code>_<\/code> to the left pinky home key, where <code>?<\/code> was. See the reasons below.<\/li><li><b>New:<\/b> <code>-&gt;<\/code> and <code>=&gt;<\/code> each type with a single key.<\/li><\/ul><\/div>", "reasonsHTML": "<div class='opinions'><div class='op S'><h3><span class='tag tB'>Speed<\/span>Speed-typing expert<\/h3><ul><li>With the right thumb holding, <code>( ) [ ] &lt; &gt; &amp; ! #<\/code> are opposite-hand chords, the fastest layer geometry.<\/li><li><b>Swapped <code>_<\/code> and <code>?<\/code>.<\/b> On the right index, <code>_<\/code> shares a finger with n, m, u, y and j in about 30% of snake_case joins (<code>get_mut<\/code>, <code>fn_name<\/code>, <code>is_none<\/code>). That's the expert's estimate. On the left pinky the clash is under 1%.<\/li><li>O, P and N are now transparent, so <code>unwrap_or<\/code>, <code>_ptr<\/code> and <code>[0]<\/code> come out right even if the thumb lifts late.<\/li><li><code>-&gt;<\/code> and <code>=&gt;<\/code> as one key each save a keystroke on Rust's two most common digraphs.<\/li><\/ul><\/div><div class='op E'><h3><span class='tag tA'>Ergonomics<\/span>Ergonomics expert<\/h3><ul><li>Moving the hold to the right thumb makes your fixed left half cross-hand. Today it is same-hand with Space.<\/li><li>Taking Symbols off Space also takes Flow Tap out of the symbol path, so <code>my_var<\/code> and <code>␣{<\/code> stop misfiring.<\/li><li><code>_<\/code> is Rust's most repeated symbol, so it should be the first thing to leave the busy right hand. The left pinky carries far less than the right one (Backspace, <code>'<\/code>, <code>:<\/code>, <code>=<\/code>).<\/li><li><b>Watch:<\/b> the right inner thumb is a slight reach (1u in and 0.25u down). If the base of your thumb gets sore, that's why.<\/li><\/ul><\/div><\/div><div class='op U'><h3><span class='tag tN'>My call<\/span>Where they disagreed<\/h3><ul><li><b>The <code>_<\/code> swap<\/b> is the one change that touches years of muscle memory. Both experts back it. Expect a week or two of slower snake_case, then a net gain.<\/li><\/ul><\/div>"}, {"slug": "nav", "title": "Nav", "layers": {"C": {"id": 3, "name": "Nav / IDE", "activation": "hold L-inner thumb (Enter)", "tap": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "--", "⌘\\", "⌘⇧[", "⌘⇧]", "⌘↓", "⌥P", "⌥H", "⌥L", "⌥N", "Play", "Stop"], ["", "--", "⌃⇧G", "⌘⇧F", "⌘⇧H", "⌘⇧E", "←", "↓", "↑", "→", "Vol-", "Vol+"], ["⌥Spc", "⌥⌘⇧C", "⌥⌘C", "⌘1/2", "⌃`", "--", "Home", "PgDn", "PgUp", "End", "Mute", "⌘⇧4"], ["", "", "", ""]], "hold": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", ""]], "cat": [["trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns", "trns"], ["trns", "none", "ide", "ide", "ide", "ide", "macro", "macro", "macro", "macro", "media", "media"], ["trns", "none", "ide", "ide", "ide", "ide", "nav", "nav", "nav", "nav", "media", "media"], ["sys", "ide", "ide", "ide", "ide", "none", "nav", "nav", "nav", "nav", "media", "sys"], ["trns", "trns", "trns", "trns"]], "replaces": 3}, "N": {"id": 3, "replaces": 3, "name": "Nav", "activation": "hold L-outer thumb (tap = Space)", "tap": [["", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", ""], ["", "--", "⌘⇧[", "⌘⇧]", "⌃-", "⌃⇧-", "⌥P", "⌥H", "⌥L", "⌥N", "--", "Del"], ["", "⌃", "⌥", "⌘", "⇧", "LLock", "←", "↓", "↑", "→", "--", "--"], ["", "⌘Z", "⌘X", "⌘C", "⌘V", "⌘⇧Z", "Home", "PgDn", "PgUp", "End", "--", "--"], ["", "", "Enter", ""]], "hold": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["NAV", "", "", ""]], "cat": [["trns", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "trns"], ["trns", "none", "ide", "ide", "ide", "ide", "macro", "macro", "macro", "macro", "none", "edit"], ["trns", "mod", "mod", "mod", "mod", "sys", "nav", "nav", "nav", "nav", "none", "none"], ["trns", "edit", "edit", "edit", "edit", "edit", "nav", "nav", "nav", "nav", "none", "none"], ["trns", "trns", "edit", "trns"]]}}, "note": "Cut down to moving and editing text. VS Code panels moved to Numbers and media moved to F-keys.", "reqHTML": "<div style='display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px'><div class='eyebrow'>Your requests, and how this layer answers them<\/div><ul><li><b>Less overwhelming:<\/b> 17 VS Code, media and app shortcuts moved off this layer. What's left (28 keys, down from 31) is only moving through and editing text, and every key is within one row of home.<\/li><li><b>Real Enter lives here:<\/b> the right inner thumb, so you can move through a menu and confirm it without letting go.<\/li><li><b>Where your old Nav keys went:<\/b> VS Code panels, copy path, launcher and terminal are on <a href='#numbers'>Numbers<\/a>. Media and ⌘⇧4 are on <a href='#fkeys'>F-keys<\/a>. ⌃⌘⇧4 is on Base's top row. File end is now ⌘ (D) + ↓. Stop is gone, because macOS ignores it.<\/li><\/ul><\/div>", "reasonsHTML": "<div class='opinions'><div class='op S'><h3><span class='tag tB'>Speed<\/span>Speed-typing expert<\/h3><ul><li>Plain ⌃⌥⌘⇧ on the left home row (with no hold timing) make ⌥⇧→ word select and ⌘⇧← line select instant.<\/li><li>Undo, Cut, Copy, Paste and Redo on Z X C V B keep the familiar Mac shapes.<\/li><li>With Enter beside the arrows, <code>↓ ↓ ⏎<\/code> works without releasing anything.<\/li><li>A lean layer suits a Space hold: fewer live keys means fewer surprises from a lingering thumb.<\/li><\/ul><\/div><div class='op E'><h3><span class='tag tA'>Ergonomics<\/span>Ergonomics expert<\/h3><ul><li>The arrows sit opposite the holding thumb, and selecting is a chord with both hands at rest.<\/li><li>Added Layer Lock on G, so long reading, diff scrolling and selections aren't a minutes-long static thumb hold.<\/li><li>Del on the Backspace key matches the Mac's fn+⌫.<\/li><li><b>Watch:<\/b> selecting by word holds three left-hand keys (Space + ⌥ + ⇧). That's fine in bursts, but tiring in long refactors.<\/li><\/ul><\/div><\/div><div class='op U'><h3><span class='tag tN'>My call<\/span>Where they disagreed<\/h3><ul><li><b>tmux keys:<\/b> the speed expert suggested switching them from Right to Left Option. They work for you today, so I kept Right Option. Switch only if ⌥H ever types ˙.<\/li><\/ul><\/div>"}, {"slug": "fkeys", "title": "F-keys + media", "layers": {"C": null, "N": {"id": 5, "replaces": null, "name": "F-keys + media", "activation": "press both inner thumbs together (combo), keep holding", "tap": [["Boot", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "Lock"], ["--", "F12", "F7", "F8", "F9", "--", "Play", "Mute", "Vol-", "Vol+", "--", "--"], ["--", "F11", "F4", "F5", "F6", "--", "--", "⇧", "⌘", "⌥", "⌃", "--"], ["--", "F10", "F1", "F2", "F3", "LLock", "⌘⇧4", "RGB", "Bri-", "Bri+", "--", "--"], ["--", "", "", "--"]], "hold": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "", "", "", "", "", "", "", "", "", "", ""], ["", "FN", "FN", ""]], "cat": [["sys", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "sys"], ["none", "fn", "fn", "fn", "fn", "none", "media", "media", "media", "media", "none", "none"], ["none", "fn", "fn", "fn", "fn", "none", "none", "mod", "mod", "mod", "mod", "none"], ["none", "fn", "fn", "fn", "fn", "sys", "sys", "sys", "sys", "sys", "none", "none"], ["none", "trns", "trns", "none"]]}}, "missingMsg": "Your current layout has no F-keys on any layer.", "note": "Expert A's F-key block mirrors the numpad: F5 is where 5 is, and F10–F12 are on the pinky column. Media, screenshot and LED keys moved here off Nav.", "reqHTML": "<div style='display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px'><div class='eyebrow'>Your requests, and how this layer answers them<\/div><ul><li><b>Expert A's F-keys:<\/b> kept as designed.<\/li><li><b>VS Code meanings:<\/b> F2 rename, F12 go to definition, ⇧F12 references, F8 next problem, F5 debug, F9 breakpoint, F10 step over, F11 step into.<\/li><li><b>How to open it:<\/b> press both inner thumbs <i>together<\/i> and hold. Layer Lock on B keeps it on for a debugging session.<\/li><\/ul><\/div>", "reasonsHTML": "<div class='opinions'><div class='op S'><h3><span class='tag tB'>Speed<\/span>Speed-typing expert<\/h3><ul><li>The block mirrors the numpad, so there's nothing new to learn.<\/li><li>Opening it with a simultaneous press, not an overlap, matters because Rust overlaps the inner thumbs all the time (<code>[0]<\/code>, <code>(1, 2)<\/code>, <code>Vec&lt;u8&gt;<\/code>). With a plain overlap, those would have hit F2 rename, F5 debug or Mute.<\/li><li>Mods on the right home row make ⇧F12 and ⌥F12 one-hand chords, with no hold timing.<\/li><\/ul><\/div><div class='op E'><h3><span class='tag tA'>Ergonomics<\/span>Ergonomics expert<\/h3><ul><li>Holding both thumbs is fine for occasional keys. Layer Lock removes it for debugging bursts, where you'd otherwise hold both thumbs while the pinky reaches F10/F11.<\/li><li>Boot (flash mode) and Lock (lock screen) sit in the far corners behind a two-thumb press, so they're very hard to hit by accident.<\/li><\/ul><\/div><\/div>"}], "meta": {"lede": "Your current layout next to the new one, layer by layer. Click any key to compare it, and read the list beside each board to see what every shortcut does.", "introHTML": "\n<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:8px\">\n  <div class=\"eyebrow\">What changed in this round<\/div>\n  <p>One new layout replaces the A/B pair. It is built from your choices for each layer, then reviewed by a <b>speed-typing expert<\/b> and an <b>ergonomics expert<\/b>. Each tab shows your current layer next to the new one, how your requests were handled, both experts' reasons, and where I settled a disagreement between them. The Mouse layer is left out, as you asked.<\/p>\n<\/div>\n", "verdictHTML": "\n<div class=\"view\">\n  <div class=\"panel verdict\" style=\"display:flex;flex-direction:column;gap:12px\">\n    <div class=\"eyebrow\">Summary<\/div>\n    <h2>One layout, built from your choices<\/h2>\n    <ul><li><b>Thumbs:<\/b> Space / hold Nav · ⇧⏎ / hold Numbers · Tab / hold Symbols · Esc / hold ⇧. F-keys open when you press both inner thumbs together.<\/li><li><b>Base<\/b> is Expert B's. <b>Numbers<\/b> is Expert A's numpad plus <code>/<\/code>, with VS Code keys on the left hand. <b>Symbols<\/b> keeps your bracket block, has no repeats, and adds <code>-&gt;<\/code> and <code>=&gt;<\/code>. <b>Nav<\/b> is cut down to editing. <b>F-keys<\/b> is Expert A's block.<\/li><li><b>Relearning:<\/b> the thumb roles and the <code>_<\/code> swap are the big ones. Both experts estimate 1–3 weeks. Go easy while the thumbs adjust, because tension is itself a strain risk.<\/li><\/ul>\n  <\/div>\n  <h2>Firmware settings this layout needs<\/h2>\n  <p>Both experts agreed on these. Rows marked custom code need C in this repo, which Oryx can't express. Everything else can be set in Oryx.<\/p>\n  <div class='tbl'><table><thead><tr><th>Setting<\/th><th>Value<\/th><th>Why<\/th><\/tr><\/thead><tbody><tr><td><b>Chordal Hold<\/b><\/td><td>On, with all four thumbs exempt<\/td><td>A fast same-hand roll can't turn a letter into ⌘/⌥/⌃. The thumbs must be exempt, or capitals typed with the right Shift thumb come out as Esc + lowercase.<\/td><\/tr><tr><td><b>Tapping term<\/b><\/td><td>200 ms. 160 ms for Esc/⇧, 230 ms for A, S, L and :<\/td><td>A real Esc tap takes under 100 ms, so 160 ms lets a lingering capital resolve as Shift. Ring and pinky fingers lift more slowly.<\/td><\/tr><tr><td><b>Permissive Hold<\/b><\/td><td>On for the home-row mods, Num, Sym and Esc/⇧. On for Space only when the right inner thumb is tapped inside it (custom code)<\/td><td>Chords fire as soon as you release the inner key, so there's no 200 ms wait. Space keeps the strict rule so that fast typing never opens Nav.<\/td><\/tr><tr><td><b>Hold on other key<\/b><\/td><td>Sym thumb only<\/td><td>A rolled symbol never leaks a Tab, which would move focus in Slack or the browser.<\/td><\/tr><tr><td><b>Flow Tap<\/b><\/td><td>150 ms on the home-row mods only. Off on every thumb<\/td><td>Mid-word rolls stay letters. Off on Space so 'type, then send' works. Off on Num because Oryx's placeholder letter would otherwise force newlines into <code>u8<\/code>.<\/td><\/tr><tr><td><b>Quick tap<\/b><\/td><td>0 on the thumbs, 120 ms on the home-row mods<\/td><td>Newline then <code>1.<\/code>, or Tab then <code>(<\/code>, gives the layer instead of auto-repeat. Holding <code>l<\/code> in Vim still repeats.<\/td><\/tr><tr><td><b>Caps Word<\/b><\/td><td>Double-tap the left one-shot ⇧, or the CW key<\/td><td>For SCREAMING_SNAKE constants.<\/td><\/tr><tr><td><b>Key override<\/b><\/td><td>⇧ + ; → ?<\/td><td><code>?<\/code> at the ANSI spot for chat.<\/td><\/tr><tr><td><b>Leader<\/b><\/td><td>Top-row key, then one letter<\/td><td>Rust snippets: <code>&amp;mut<\/code>, <code>#[derive(..)]<\/code>, <code>println!<\/code>, <code>Ok(())<\/code>…<\/td><\/tr><tr><td><b>Combo<\/b><\/td><td>Both inner thumbs within 35 ms → F-keys<\/td><td>A deliberate press opens it. A rolling overlap can't.<\/td><\/tr><tr><td><b>Num guard (custom code)<\/b><\/td><td>A left-hand key within 150 ms of a digit types its letter<\/td><td>Stops <code>-r<\/code>, <code>3rd<\/code> and <code>0x<\/code> firing VS Code shortcuts.<\/td><\/tr><tr><td><b>Tap dance<\/b><\/td><td>Removed<\/td><td>⌘ + digit on Numbers replaces it.<\/td><\/tr><\/tbody><\/table><\/div>\n  <div class=\"opinions\">\n    <div class=\"op S\"><h3><span class=\"tag tB\">Speed<\/span>Risks to know about<\/h3><ul><li><b>⇧⏎ isn't Enter everywhere.<\/b> In find bars it jumps to the previous match. With the VS Code suggestion list open, it accepts a suggestion. In a default macOS terminal it acts as a normal Enter.<\/li><li>A Numbers tap can still leak if the thumb lifts before the key. That leak is now a newline, and in a terminal a newline runs the half-typed command. Today the same leak is an Enter, so this is no worse.<\/li><li><code>-<\/code> lives only on Numbers, so hyphens, chat bullets and CLI flags are all layer chords.<\/li><li><code>/<\/code> on Numbers sits where <code>;<\/code> is on Base, so <code>42;<\/code> typed with the thumb still down comes out as <code>42/<\/code>.<\/li><\/ul><\/div>\n    <div class=\"op E\"><h3><span class=\"tag tA\">Ergonomics<\/span>Risks to know about<\/h3><ul><li>The right pinky is the busiest finger: Backspace, <code>'<\/code>, <code>:<\/code>/⌃ and <code>=<\/code> in the corner.<\/li><li>⌃ on both pinkies (Vim ⌃D/⌃U/⌃W, terminal ⌃C/⌃R): keep the holds short, and use the pinky on the opposite hand from the letter.<\/li><li><code>\"<\/code> is the widest same-hand stretch: the outer pinky key while the right thumb holds Symbols. One-shot ⇧ then <code>'<\/code> is the easy alternative.<\/li><li>Quick fix is easier as ⌘ (D) + <code>.<\/code> on Base than from the Numbers layer.<\/li><\/ul><\/div>\n  <\/div>\n  <p style=\"font-size:13px;color:var(--muted)\">The two experts are independent AI reviewers, one judging by typing speed and one by ergonomics. They are not human specialists. Their percentage and timing figures are estimates, not measurements.<\/p>\n<\/div>\n", "lastTab": "Settings & summary"}, "G": {"⌃⇧G": ["Git", "VS Code: open the Source Control (Git) panel."], "⌘⇧F": ["Find all", "VS Code: search across every file in the project."], "⌘⇧H": ["Replace all", "VS Code: find and replace across every file in the project."], "⌘⇧E": ["Explorer", "VS Code: show the file Explorer sidebar."], "⌘⇧P": ["Palette", "VS Code: open the command palette."], "⌘\\": ["Split", "VS Code: split the editor into a second pane."], "⌘⇧[": ["Prev tab", "Previous tab (VS Code, browser, terminal)."], "⌘⇧]": ["Next tab", "Next tab (VS Code, browser, terminal)."], "⌘↓": ["File end", "Cmd+Down: jump to the end of the file in an editor. In Finder it opens the selected item."], "⌘.": ["Quick fix", "VS Code: Quick Fix. With rust-analyzer: add a missing import, fill in match arms, and so on."], "⌃`": ["Terminal", "VS Code: show or hide the built-in terminal."], "⌘1/2": ["Group 1/2", "Tap dance. Tap for ⌘1 (focus editor group 1), double-tap for ⌘2 (focus editor group 2)."], "⌥⌘⇧C": ["Rel path", "VS Code: copy the current file's path relative to the project."], "⌥⌘C": ["Full path", "VS Code: copy the current file's full path. In Finder, Copy Path."], "⌃-": ["Back", "VS Code: go back to where the cursor was before, e.g. after F12 go to definition."], "⌃⇧-": ["Forward", "VS Code: go forward again after Back."], "⌘Z": ["Undo", "Undo."], "⌘X": ["Cut", "Cut."], "⌘C": ["Copy", "Copy."], "⌘V": ["Paste", "Paste."], "⌘⇧Z": ["Redo", "Redo."], "⌥P": ["Prev win", "Right-Option+P. Probably your tmux or Zellij binding for the previous window. I'm inferring this from the P/H/L/N pattern."], "⌥H": ["Pane ←", "Right-Option+H. Probably your tmux or Zellij binding to move to the pane on the left (inferred)."], "⌥L": ["Pane →", "Right-Option+L. Probably your tmux or Zellij binding to move to the pane on the right (inferred)."], "⌥N": ["Next win", "Right-Option+N. Probably your tmux or Zellij binding for the next window (inferred)."], "⌥Spc": ["Launcher", "Option+Space. By default this opens the quick-entry window of the ChatGPT or Claude desktop app (my reading of what you use it for)."], "⌘⇧4": ["Shot file", "macOS: screenshot a selected area and save it as a file."], "⌃⌘⇧4": ["Shot clip", "macOS: screenshot a selected area to the clipboard, ready to paste into a chat."], "Lock": ["Lock Mac", "Lock the screen (⌃⌘Q)."], "Boot": ["Flash", "Put the keyboard into bootloader mode for flashing new firmware."], "RGB": ["LEDs", "Turn the keyboard LEDs on or off."], "Bri-": ["LED −", "LED brightness down."], "Bri+": ["LED +", "LED brightness up."], "MyPC": ["No-op", "'My Computer' media key. It does nothing on macOS."], "Play": ["Play", "Play or pause media."], "Stop": ["Stop", "Stop media. Most macOS apps ignore it."], "Vol-": ["Vol −", "Volume down."], "Vol+": ["Vol +", "Volume up."], "Mute": ["Mute", "Mute audio."], "Del": ["Del →", "Forward delete: deletes the character after the cursor. A Mac keyboard has no such key without fn."], "Home": ["Home", "Start of line in VS Code. In many Mac apps it jumps to the top of the document instead."], "End": ["End", "End of line in VS Code. In many Mac apps it jumps to the bottom of the document instead."], "PgUp": ["PgUp", "Page up."], "PgDn": ["PgDn", "Page down."], "Bspc": ["Bspc", "Backspace."], "Esc": ["Esc", "Escape. Leaves insert mode in Vim."], "Enter": ["Enter", "Enter. In chat apps this sends the message."], "Tab": ["Tab", "Tab, or accept a completion."], "Space": ["Space", "Space."], "⇧⏎": ["Newline", "Shift+Enter: a new line in Slack or a chat app, without sending."], "OS⇧": ["One-shot ⇧", "One-shot Shift: tap it, and the next key you press comes out capitalised."], "Lead": ["Leader", "Leader key: tap it, then one letter, to type a Rust snippet. For example m gives &mut and d gives #[derive(Debug, Clone)]."], "CW": ["Caps Word", "Caps Word: types the next word in capitals, carries on through _, and stops at a space. Use it for SCREAMING_SNAKE consts."], "CapsW": ["Caps Word", "Caps Word: types the next word in capitals, carries on through _, and stops at a space. Use it for SCREAMING_SNAKE consts."], "LLock": ["Lock layer", "Layer Lock: keeps the current layer on until you tap it again, so you don't have to hold a thumb."], "->": ["->", "Macro: types -> (function return type)."], "=>": ["=>", "Macro: types => (match arm)."], "KP-": ["KP −", "Keypad minus. In terminal Vim it can send a different code from a normal '-'."], "KP+": ["KP +", "Keypad plus. In terminal Vim it can send a different code from a normal '+'."], "KP*": ["KP *", "Keypad multiply. In terminal Vim it can send a different code from a normal '*'."], "KP/": ["KP /", "Keypad divide. In terminal Vim it can send a different code from a normal '/'."], "F1": ["F1", "VS Code: command palette."], "F2": ["F2", "VS Code: rename symbol."], "F3": ["F3", "VS Code: next search match."], "F4": ["F4", "VS Code: next result in the Search panel."], "F5": ["F5", "VS Code: start or continue debugging."], "F6": ["F6", "VS Code: pause the debugger."], "F7": ["F7", "VS Code: next change in the diff view."], "F8": ["F8", "VS Code: next problem (compiler error or warning)."], "F9": ["F9", "VS Code: toggle a breakpoint."], "F10": ["F10", "VS Code: step over."], "F11": ["F11", "VS Code: step into. macOS takes F11 for Show Desktop unless you turn that off."], "F12": ["F12", "VS Code: go to definition."], "⇧F5": ["⇧F5", "VS Code: stop debugging."], "⇧F8": ["⇧F8", "VS Code: previous problem."], "⇧F11": ["⇧F11", "VS Code: step out."], "⇧F12": ["⇧F12", "VS Code: find all references."]}, "FCAP": {"F1": "palette", "F2": "rename", "F3": "find nxt", "F4": "result", "F5": "debug", "F6": "pause", "F7": "diff", "F8": "problem", "F9": "brkpt", "F10": "step ovr", "F11": "step in", "F12": "go to def", "⇧F5": "stop", "⇧F8": "prev prb", "⇧F11": "step out", "⇧F12": "refs"}, "HOLD": {"⌃": "Control", "⌥": "Option", "⌘": "Command", "⇧": "Shift", "SYM": "Symbols layer", "NAV": "Navigation layer", "NUM": "Numbers layer", "FN": "F-key layer", "FUN": "F-key / media layer"}, "lights": {"roles": [["mod", "Modifiers", "⌃ ⌥ ⌘ ⇧, the home-row mods and the Shift thumb, on every layer", "green"], ["edit", "Editing & control", "Esc, Tab, Backspace, Enter, Delete, clipboard, Leader, Caps Word, LED keys", "white"], ["nav", "Nav layer", "Arrows, Home/End and Page Up/Down, plus the Space thumb that opens Nav", "cyan"], ["num", "Numbers layer", "Digits and operators, plus the newline thumb that opens Numbers", "amber"], ["sym", "Symbols layer", "Brackets, symbols and -> =>, plus the Tab thumb that opens Symbols", "magenta"], ["app", "App & VS Code shortcuts", "VS Code panels, tabs, tmux, launcher, media and screenshots", "blue"], ["fn", "F-keys", "F1–F12, plus both inner thumbs while F-keys is open", "amber"], ["lock", "Layer Lock", "Dim normally, bright while a layer is locked", "white"], ["danger", "Boot & Lock screen", "The two keys you must not hit by accident, in the far corners of F-keys", "white"], ["letters", "Base letters", "Letters and punctuation on Base", "off"]], "layers": [{"name": "Base", "note": "Letters stay dark. Only the modifiers, editing keys and the four thumbs glow, and each layer thumb shows the colour of the layer it opens.", "roles": [[["edit", 1], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["edit", 1], ["edit", 1], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["app", 1]], [["edit", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["edit", 1]], [["mod", 1], ["mod", 1], ["mod", 1], ["mod", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["mod", 1], ["mod", 1], ["mod", 1], ["letters", 1]], [["edit", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1], ["letters", 1]], [["nav", 2], ["num", 2], ["sym", 2], ["mod", 2]]], "taps": [["Esc", "--", "--", "--", "--", "Lead", "CW", "--", "--", "--", "--", "⌃⌘⇧4"], ["Tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Bspc"], ["OS⇧", "A", "S", "D", "F", "G", "H", "J", "K", "L", ":", "'"], ["Bspc", "Z", "X", "C", "V", "B", "N", "M", ",", ".", ";", "="], ["Space", "⇧⏎", "Tab", "Esc"]], "current": [["#59ff00", null, null, null, null, null, null, null, null, null, null, null], ["#59ff00", "#006cff", "#006cff", "#006cff", "#006cff", "#006cff", "#006cff", "#006cff", "#006cff", "#006cff", "#006cff", "#59ff00"], ["#59ff00", "#59ff00", "#59ff00", "#59ff00", "#006cff", "#006cff", "#006cff", "#006cff", "#59ff00", "#59ff00", "#59ff00", "#006cff"], ["#59ff00", "#006cff", "#006cff", "#006cff", "#006cff", "#006cff", "#006cff", "#006cff", "#006cff", "#006cff", "#006cff", "#006cff"], ["#59ff00", "#59ff00", "#59ff00", "#59ff00"]], "curTaps": [["Esc", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", ""], ["Tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Bspc"], ["OS⇧", "A", "S", "D", "F", "G", "H", "J", "K", "L", ":", "'"], ["Bspc", "Z", "X", "C", "V", "B", "N", "M", ",", ".", ";", "="], ["Space", "Enter", "Tab", "Esc"]]}, {"name": "Numbers + IDE", "note": "Digits bright, operators dim, VS Code keys dim blue, and the thumb you're holding glows amber.", "roles": [[["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0]], [["off", 0], ["lock", 1], ["app", 1], ["app", 1], ["app", 1], ["app", 1], ["num", 1], ["num", 2], ["num", 2], ["num", 2], ["num", 1], ["off", 0]], [["off", 0], ["mod", 1], ["mod", 1], ["mod", 1], ["app", 1], ["app", 1], ["num", 1], ["num", 2], ["num", 2], ["num", 2], ["num", 1], ["num", 1]], [["off", 0], ["app", 1], ["app", 1], ["app", 1], ["app", 1], ["app", 1], ["num", 2], ["num", 2], ["num", 2], ["num", 2], ["num", 1], ["off", 0]], [["off", 0], ["num", 2], ["off", 0], ["off", 0]]], "taps": [["", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", ""], ["", "LLock", "⌘\\", "⌘⇧E", "⌘⇧H", "⌃`", "+", "7", "8", "9", "*", ""], ["", "⌃", "⌥", "⌘", "⌘⇧F", "⌃⇧G", "-", "4", "5", "6", ".", ":"], ["", "⌥⌘C", "⌥⌘⇧C", "⌘⇧P", "⌥Spc", "⌘.", "0", "1", "2", "3", "/", ""], ["", "", "", ""]], "current": [["#59ff00", null, null, null, null, null, null, null, null, null, null, "#59ff00"], ["#59ff00", null, null, null, null, "#fff600", "#fff600", "#fff600", "#fff600", "#fff600", "#fff600", "#fff600"], ["#59ff00", "#ff007e", "#ff007e", "#ff007e", "#ff007e", "#ff007e", "#ff007e", "#ff007e", "#ff007e", "#ff007e", "#ff007e", "#fff600"], ["#59ff00", null, null, null, null, null, "#ff007e", null, "#fff600", "#fff600", "#fff600", "#59ff00"], ["#59ff00", "#59ff00", "#59ff00", "#59ff00"]], "curTaps": [["", "", "", "", "", "", "", "", "", "", "", "MyPC"], ["", "--", "--", "--", "--", "%", "^", "KP-", "KP+", "KP*", "KP/", ""], ["", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ""], ["", "--", "--", "--", "--", "--", "0", "--", "", "", "", ""], ["", "", "", ""]]}, {"name": "Symbols", "note": "Bracket pairs and -> / => bright, the other symbols dim.", "roles": [[["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0]], [["off", 0], ["sym", 1], ["sym", 1], ["sym", 2], ["sym", 2], ["sym", 1], ["sym", 1], ["sym", 2], ["sym", 2], ["off", 0], ["off", 0], ["off", 0]], [["off", 0], ["sym", 1], ["sym", 1], ["sym", 2], ["sym", 2], ["sym", 1], ["sym", 1], ["sym", 2], ["sym", 2], ["sym", 1], ["sym", 1], ["sym", 1]], [["off", 0], ["sym", 1], ["sym", 1], ["sym", 2], ["sym", 2], ["sym", 1], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0]], [["off", 0], ["off", 0], ["sym", 2], ["off", 0]]], "taps": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "!", "@", "[", "]", "%", "^", "->", "=>", "", "", ""], ["", "_", "&", "<", ">", "#", "?", "{", "}", "|", "\\", "\""], ["", "~", "`", "(", ")", "$", "", "", "", "", "", ""], ["", "", "", ""]], "current": [["#59ff00", null, null, null, null, null, null, null, null, null, null, "#59ff00"], ["#59ff00", "#fff600", "#fff600", "#ff00e4", "#ff00e4", "#fff600", "#fff600", "#fff600", "#fff600", "#fff600", "#fff600", "#fff600"], ["#59ff00", "#fff600", "#fff600", "#ff00e4", "#ff00e4", "#fff600", "#fff600", "#ff00e4", "#ff00e4", "#fff600", "#fff600", "#fff600"], ["#59ff00", "#fff600", "#fff600", "#ff00e4", "#ff00e4", "#fff600", "#fff600", null, "#fff600", "#fff600", "#fff600", "#59ff00"], ["#59ff00", "#59ff00", "#59ff00", "#59ff00"]], "curTaps": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "!", "@", "[", "]", "%", "^", "-", "+", "*", "/", ""], ["", "?", "&", "<", ">", "#", "_", "{", "}", "|", "\\", "\""], ["", "~", "`", "(", ")", "$", "0", "--", "", "", "", ""], ["", "", "", ""]]}, {"name": "Nav", "note": "Arrows bright, Home/End/Page dim, Enter and Delete bright white, clipboard dim white.", "roles": [[["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0]], [["off", 0], ["off", 0], ["app", 1], ["app", 1], ["app", 1], ["app", 1], ["app", 1], ["app", 1], ["app", 1], ["app", 1], ["off", 0], ["edit", 2]], [["off", 0], ["mod", 1], ["mod", 1], ["mod", 1], ["mod", 1], ["lock", 1], ["nav", 2], ["nav", 2], ["nav", 2], ["nav", 2], ["off", 0], ["off", 0]], [["off", 0], ["edit", 1], ["edit", 1], ["edit", 1], ["edit", 1], ["edit", 1], ["nav", 1], ["nav", 1], ["nav", 1], ["nav", 1], ["off", 0], ["off", 0]], [["nav", 2], ["off", 0], ["edit", 2], ["off", 0]]], "taps": [["", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", ""], ["", "--", "⌘⇧[", "⌘⇧]", "⌃-", "⌃⇧-", "⌥P", "⌥H", "⌥L", "⌥N", "--", "Del"], ["", "⌃", "⌥", "⌘", "⇧", "LLock", "←", "↓", "↑", "→", "--", "--"], ["", "⌘Z", "⌘X", "⌘C", "⌘V", "⌘⇧Z", "Home", "PgDn", "PgUp", "End", "--", "--"], ["", "", "Enter", ""]], "current": [["#59ff00", null, null, null, null, null, null, null, null, null, null, null], ["#59ff00", null, "#00a8c1", "#00897d", "#00897d", "#00a8c1", "#ff9600", "#ff9600", "#ff9600", "#ff9600", "#ff9600", "#ff9600"], ["#59ff00", null, "#00a8c1", "#00a8c1", "#00a8c1", "#00a8c1", "#ff0000", "#ff0000", "#ff0000", "#ff0000", "#ff9600", "#ff9600"], ["#9524aa", "#00a8c1", "#00a8c1", "#00a8c1", "#00a8c1", null, null, null, null, null, "#ff9600", "#9524aa"], ["#59ff00", "#59ff00", "#59ff00", "#59ff00"]], "curTaps": [["", "", "", "", "", "", "", "", "", "", "", ""], ["", "--", "⌘\\", "⌘⇧[", "⌘⇧]", "⌘↓", "⌥P", "⌥H", "⌥L", "⌥N", "Play", "Stop"], ["", "--", "⌃⇧G", "⌘⇧F", "⌘⇧H", "⌘⇧E", "←", "↓", "↑", "→", "Vol-", "Vol+"], ["⌥Spc", "⌥⌘⇧C", "⌥⌘C", "⌘1/2", "⌃`", "--", "Home", "PgDn", "PgUp", "End", "Mute", "⌘⇧4"], ["", "", "", ""]]}, {"name": "F-keys + media", "note": "F-keys bright amber, in the same shape as the digits on Numbers. Boot and Lock sit dim in the far corners.", "roles": [[["danger", 1], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["off", 0], ["danger", 1]], [["off", 0], ["fn", 2], ["fn", 2], ["fn", 2], ["fn", 2], ["off", 0], ["app", 1], ["app", 1], ["app", 1], ["app", 1], ["off", 0], ["off", 0]], [["off", 0], ["fn", 2], ["fn", 2], ["fn", 2], ["fn", 2], ["off", 0], ["off", 0], ["mod", 1], ["mod", 1], ["mod", 1], ["mod", 1], ["off", 0]], [["off", 0], ["fn", 2], ["fn", 2], ["fn", 2], ["fn", 2], ["lock", 1], ["app", 1], ["edit", 1], ["edit", 1], ["edit", 1], ["off", 0], ["off", 0]], [["off", 0], ["fn", 2], ["fn", 2], ["off", 0]]], "taps": [["Boot", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "Lock"], ["--", "F12", "F7", "F8", "F9", "--", "Play", "Mute", "Vol-", "Vol+", "--", "--"], ["--", "F11", "F4", "F5", "F6", "--", "--", "⇧", "⌘", "⌥", "⌃", "--"], ["--", "F10", "F1", "F2", "F3", "LLock", "⌘⇧4", "RGB", "Bri-", "Bri+", "--", "--"], ["--", "", "", "--"]], "current": null, "curTaps": null}], "introHTML": "\n<div class=\"panel\" style=\"display:flex;flex-direction:column;gap:10px\">\n  <div class=\"eyebrow\">Lights<\/div>\n  <h2>Calm on Base, one colour per layer<\/h2>\n  <ul>\n    <li><b>Base stays mostly dark.<\/b> Today every letter glows blue at full brightness. In the new scheme the letters are off, and only the modifiers, the editing keys and the thumbs light up.<\/li>\n    <li><b>Each layer has its own colour, and its thumb wears it on Base.<\/b> Space glows cyan and opens the cyan Nav layer. The newline thumb is amber for Numbers, and Tab is magenta for Symbols. You learn the map by looking down once.<\/li>\n    <li><b>The same meaning has the same colour on every layer:<\/b> green is a modifier, white is editing or system, and blue is an app or VS Code shortcut.<\/li>\n    <li><b>Two brightness levels:<\/b> bright for the keys you opened the layer for, dim for the rest. Unused keys stay off.<\/li>\n    <li><b>Six colours that stay far apart on an RGB LED:<\/b> amber, green, cyan, blue, magenta and white. Neighbours such as red and amber, amber and yellow, or blue and purple blur together on LEDs, and the page warns you if a layer mixes them. Red is left unused. If you want Boot and Lock to stand out in red, the page will warn that it sits close to the amber F-keys.<\/li>\n  <\/ul>\n  <p style=\"font-size:13px;color:var(--muted)\">This is a screen preview. Real LEDs are brighter and slightly shifted: white often looks a little blue, and amber can lean yellow. Once you've chosen, press <b>Copy settings<\/b> and paste the line to me, and I'll put it in the firmware.<\/p>\n<\/div>\n"}};
+const {versions, groups, meta, G, FCAP, HOLD} = DATA;
+const CATS = {alpha:"Letters",mod:"Modifiers",num:"Numbers",sym:"Symbols",edit:"Editing keys",nav:"Navigation",ide:"VS Code / app shortcuts",media:"Media",sys:"System",fn:"F-keys",macro:"Macros / features"};
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const VERS = versions.map(v=>[v.key, v.label, null, v.cls]);
+document.documentElement.style.setProperty("--nv", VERS.length);
+const ROWN = ["top row","upper row","home row","bottom row"];
+const COLN = ["left outer","left pinky","left ring","left middle","left index","left inner","right inner","right index","right middle","right ring","right pinky","right outer"];
+const THN = ["left outer thumb","left inner thumb","right inner thumb","right outer thumb"];
+const posName = (r,c) => r===4 ? THN[c] : `${ROWN[r]}, ${COLN[c]}`;
+
+function describe(tap, hold){
+  const out = {name: "", desc: ""};
+  if (tap === "" ) { out.name = "—"; out.desc = "Transparent: falls through to the Base layer key."; }
+  else if (tap === "--") { out.name = "—"; out.desc = "No key."; }
+  else {
+    const g = G[tap];
+    out.name = tap;
+    out.desc = g ? g[1] : (tap.length===1 ? `Types ${tap}` : tap);
+  }
+  if (hold) out.desc += ` Hold: ${HOLD[hold] || hold}.`;
+  return out;
+}
+
+function keyEl(tap, hold, cat, changed, r, c){
+  const b = document.createElement("button"); b.type = "button";
+  let cls = "k", top = "", main = tap, glyph = tap, word = false;
+  if (tap === "") { cls += " trns"; main = glyph = "▿"; }
+  else if (tap === "--" && !hold) { cls += " none"; main = glyph = ""; }
+  else {
+    cls += " c-" + (cat || "edit");
+    const g = G[tap];
+    if (FCAP[tap]) { top = FCAP[tap]; }
+    else if (g && g[0] !== tap) { top = tap; main = g[0]; word = /[a-z]/i.test(main); }
+  }
+  if (changed) cls += " chg";
+  b.className = cls; b.dataset.r = r; b.dataset.c = c;
+  const d = describe(tap, hold);
+  b.setAttribute("aria-label", `${posName(r,c)}: ${d.name}. ${d.desc}`);
+  b.title = d.desc;
+  b.innerHTML = (top ? `<span class="top">${esc(top)}</span>` : "") +
+    `<span class="main${word?" word":""}${word && main.length<=4?" short":""}">${esc(main)}</span><span class="glyph">${esc(glyph)}</span>` +
+    (hold ? `<span class="h">${esc(hold)}</span>` : "");
+  return b;
+}
+
+function board(layer, ref){
+  const kb = document.createElement("div"); kb.className = "kb";
+  const halves = document.createElement("div"); halves.className = "halves";
+  const L = document.createElement("div"); L.className = "half";
+  const R = document.createElement("div"); R.className = "half";
+  const nz = x => (x === "--" ? "" : x);
+  const diff = (r,c) => ref ? (nz(ref.tap[r][c]) !== nz(layer.tap[r][c]) || (ref.hold[r][c]||"") !== (layer.hold[r][c]||"")) : false;
+  for (let r=0;r<4;r++) for (let c=0;c<12;c++) (c<6?L:R).appendChild(keyEl(layer.tap[r][c], layer.hold[r][c], layer.cat[r][c], diff(r,c), r, c));
+  halves.append(L,R); kb.appendChild(halves);
+  const th = document.createElement("div"); th.className = "thumbs";
+  const tl = document.createElement("div"); tl.className = "tpair l";
+  const tr = document.createElement("div"); tr.className = "tpair r";
+  for (let i=0;i<4;i++) (i<2?tl:tr).appendChild(keyEl(layer.tap[4][i], layer.hold[4][i], layer.cat[4][i], diff(4,i), 4, i));
+  const sl = document.createElement("div"); sl.className = "tside l"; sl.appendChild(tl);
+  const sr = document.createElement("div"); sr.className = "tside r"; sr.appendChild(tr);
+  th.append(sl,sr); kb.appendChild(th);
+  return kb;
+}
+
+function glossary(layer){
+  const box = document.createElement("div"); box.className = "gl";
+  const items = [], holds = [];
+  for (let r=0;r<5;r++) for (let c=0;c<(r===4?4:12);c++){
+    const t = layer.tap[r][c], h = layer.hold[r][c];
+    const g = G[t];
+    if (g && (g[0] !== t || FCAP[t] || ["OS⇧","Lead","CW","CapsW","LLock","->","=>","Del","⇧⏎","MyPC","Stop","Home","End"].includes(t))) items.push({r,c,chip:t,name:g[0],desc:g[1]});
+    if (h) holds.push({r,c,chip:(t && t!=="--" ? t : (r===4 ? ["L-outer","L-inner","R-inner","R-outer"][c] : "·")), name:"hold → " + (HOLD[h]||h), desc:""});
+  }
+  if (items.length){
+    box.insertAdjacentHTML("beforeend", `<h4>What the special keys do</h4>`);
+    items.forEach(it => box.appendChild(glItem(it)));
+  }
+  if (holds.length){
+    box.insertAdjacentHTML("beforeend", `<h4 style="margin-top:8px">Hold actions</h4>`);
+    holds.forEach(it => box.appendChild(glItem(it)));
+  }
+  if (!items.length && !holds.length) box.innerHTML = `<p class="none-msg">Only letters, digits and symbols here. Every key types what it shows.</p>`;
+  return box;
+}
+function glItem(it){
+  const b = document.createElement("button"); b.type="button"; b.dataset.r = it.r; b.dataset.c = it.c;
+  b.innerHTML = `<span class="chip">${esc(it.chip)}</span><span><b>${esc(it.name)}</b>${it.desc?` · ${esc(it.desc)}`:""}</span>`;
+  return b;
+}
+
+function opinion(cls, title, layer){
+  const d = document.createElement("div"); d.className = "op " + cls;
+  if (!layer) { d.innerHTML = `<h3>${esc(title)}</h3><p class="why">No counterpart layer.</p>`; return d; }
+  const ch = layer.changes||[];
+  d.innerHTML = `<h3>${esc(title)}: why this version</h3><p class="why">${esc(layer.why||"")}</p>` + (ch.length ? `<details open><summary class="eyebrow">Every change (${ch.length})</summary><ul style="margin-top:8px">${ch.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></details>` : "");
+  return d;
+}
+
+
+// ---------------- Lights tab ----------------
+const LOPTS = [["off","Off",null],["white","White",[0,0]],["red","Red",[0,255]],["amber","Amber",[21,255]],["yellow","Yellow",[43,255]],["green","Green",[85,255]],["cyan","Cyan",[128,255]],["blue","Blue",[170,255]],["purple","Purple",[191,255]],["magenta","Magenta",[213,255]],["pink","Pink",[234,255]]];
+const CONFUSE = [["red","amber"],["amber","yellow"],["blue","purple"],["purple","magenta"],["magenta","pink"],["pink","red"],["green","yellow"]];
+const LROLES = DATA.lights.roles;
+const LDEF = Object.fromEntries(LROLES.map(r=>[r[0], r[3]]));
+let LST = {roles:{...LDEF}, dim:40};
+try { const sv = JSON.parse(localStorage.getItem("vlr-lights")||"null"); if (sv && sv.roles) LST = {roles:{...LDEF, ...sv.roles}, dim: sv.dim||40}; } catch(e){}
+const saveL = () => { try{ localStorage.setItem("vlr-lights", JSON.stringify(LST)); }catch(e){} };
+function hsv2rgb(h,s,v){ h=h/255*6; s/=255; v/=255; const i=Math.floor(h)%6, f=h-Math.floor(h), p=v*(1-s), q=v*(1-f*s), t=v*(1-(1-f)*s);
+  const [r,g,b]=[[v,t,p],[q,v,p],[p,v,t],[p,q,v],[t,p,v],[v,p,q]][i]; return [r*255|0,g*255|0,b*255|0]; }
+function optRGB(name){ const o = LOPTS.find(x=>x[0]===name); return o && o[2] ? hsv2rgb(o[2][0], o[2][1], 255) : null; }
+function litStyle(role, level){
+  const name = LST.roles[role]; const rgb = (role==="off"||level===0) ? null : optRGB(name);
+  if (!rgb) return null;
+  const a = level===2 ? 0.92 : Math.max(0.12, LST.dim/100*0.92);
+  const lum = (0.2126*rgb[0]+0.7152*rgb[1]+0.0722*rgb[2])/255*a;
+  return {bg:`rgba(${rgb},${a})`, glow:`0 0 ${level===2?12:7}px rgba(${rgb},${a*0.7})`, fg: lum>0.55 ? "#111" : "#f2f4f8"};
+}
+function ledBoard(taps, colorAt){
+  const kb=document.createElement("div"); kb.className="lkb";
+  const hv=document.createElement("div"); hv.className="halves"; const L=document.createElement("div"); L.className="half"; const R=document.createElement("div"); R.className="half";
+  const mk=(r,c)=>{ const d=document.createElement("div"); d.className="lk"; const t=taps?taps[r][c]:""; const st=colorAt(r,c);
+    d.innerHTML=`<span>${esc(t && t!=="--" ? t : "")}</span>`; d.title = t||"";
+    if (st){ d.style.background=st.bg; d.style.boxShadow=st.glow; d.style.color=st.fg; } return d; };
+  for(let r=0;r<4;r++) for(let c=0;c<12;c++) (c<6?L:R).appendChild(mk(r,c));
+  hv.append(L,R); kb.appendChild(hv);
+  const th=document.createElement("div"); th.className="thumbs"; const tl=document.createElement("div"); tl.className="tpair l"; const tr=document.createElement("div"); tr.className="tpair r";
+  for(let i=0;i<4;i++) (i<2?tl:tr).appendChild(mk(4,i));
+  const sl=document.createElement("div"); sl.className="tside l"; sl.appendChild(tl); const sr=document.createElement("div"); sr.className="tside r"; sr.appendChild(tr);
+  th.append(sl,sr); kb.appendChild(th); return kb;
+}
+function lightWarnings(){
+  const out=[];
+  DATA.lights.layers.forEach(L=>{
+    const present = new Map();
+    L.roles.flat().forEach(([role,level])=>{ if(level===0||role==="off") return; const c=LST.roles[role]; if(!c||c==="off") return; if(!present.has(c)) present.set(c,new Set()); present.get(c).add(role); });
+    present.forEach((roles,c)=>{ if(roles.size>1){ const names=[...roles].map(r=>LROLES.find(x=>x[0]===r)[1]); if([...roles].some(r=>!["edit","lock","danger"].includes(r))) out.push(`<b>${esc(L.name)}:</b> ${esc(names.join(" and "))} are both ${esc(c)}.`);} });
+    const cs=[...present.keys()];
+    CONFUSE.forEach(([a,b])=>{ if(cs.includes(a)&&cs.includes(b)) out.push(`<b>${esc(L.name)}:</b> ${esc(a)} and ${esc(b)} sit close on an RGB LED and can be hard to tell apart.`); });
+  });
+  return out;
+}
+function settingsString(){ return "lights: " + LROLES.map(r=>`${r[0]}=${LST.roles[r[0]]}`).join(" ") + ` dim=${LST.dim}`; }
+function renderLights(main){
+  const v=document.createElement("div"); v.className="view";
+  v.innerHTML = DATA.lights.introHTML;
+  // controls
+  const ctrl=document.createElement("div"); ctrl.className="panel"; ctrl.style.cssText="display:flex;flex-direction:column;gap:12px";
+  ctrl.innerHTML = `<div class="eyebrow">Choose a colour for each role</div><div class="lt-ctrl" id="lt-ctrl"></div>
+    <div class="lt-sl"><label for="lt-dim"><b>Dim keys</b> brightness</label><input type="range" id="lt-dim" min="15" max="80" step="5" value="${LST.dim}"><span id="lt-dimv" class="mono">${LST.dim}%</span>
+    <span style="color:var(--muted);font-size:12.5px">Bright keys always use 100%. The Bri − / Bri + keys on F-keys scale both levels together.</span></div>
+    <div class="lt-out"><code id="lt-str"></code><button type="button" id="lt-copy">Copy settings</button><button type="button" class="lt-btn sec" id="lt-reset">Reset to recommended</button></div>
+    <div id="lt-warn"></div>`;
+  v.appendChild(ctrl);
+  const boards=document.createElement("div"); boards.className="lt-grid"; boards.id="lt-boards"; v.appendChild(boards);
+  main.appendChild(v);
+  const cbox=ctrl.querySelector("#lt-ctrl");
+  LROLES.forEach(([key,name,desc])=>{
+    const row=document.createElement("div"); row.className="lt-role";
+    row.innerHTML=`<span class="sw" id="sw-${key}"></span><b>${esc(name)}</b><select id="lt-${key}" aria-label="${esc(name)} colour">${LOPTS.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("")}</select><small>${esc(desc)}</small>`;
+    cbox.appendChild(row);
+    const sel=row.querySelector("select"); sel.value=LST.roles[key];
+    sel.addEventListener("change",()=>{ LST.roles[key]=sel.value; saveL(); paintLights(); });
+  });
+  ctrl.querySelector("#lt-dim").addEventListener("input",e=>{ LST.dim=+e.target.value; ctrl.querySelector("#lt-dimv").textContent=LST.dim+"%"; saveL(); paintLights(); });
+  ctrl.querySelector("#lt-reset").addEventListener("click",()=>{ LST={roles:{...LDEF},dim:40}; saveL(); LROLES.forEach(([k])=>{ctrl.querySelector("#lt-"+k).value=LST.roles[k];}); ctrl.querySelector("#lt-dim").value=40; ctrl.querySelector("#lt-dimv").textContent="40%"; paintLights(); });
+  ctrl.querySelector("#lt-copy").addEventListener("click",async e=>{ const t=settingsString(); try{ await navigator.clipboard.writeText(t); e.target.textContent="Copied"; setTimeout(()=>e.target.textContent="Copy settings",1500);}catch(err){ const r=document.createRange(); r.selectNodeContents(ctrl.querySelector("#lt-str")); const s=getSelection(); s.removeAllRanges(); s.addRange(r); e.target.textContent="Press ⌘C"; } });
+  paintLights();
+}
+function paintLights(){
+  LROLES.forEach(([k])=>{ const sw=document.getElementById("sw-"+k); if(!sw) return; const rgb=optRGB(LST.roles[k]); sw.style.background = rgb?`rgb(${rgb})`:"transparent"; sw.style.backgroundImage = rgb?"none":"repeating-linear-gradient(45deg,var(--line) 0 3px,transparent 3px 6px)"; });
+  document.getElementById("lt-str").textContent = settingsString();
+  const w=lightWarnings(); document.getElementById("lt-warn").innerHTML = w.length ? `<div class="lt-warn"><b>Check these:</b><ul style="margin-top:6px">${w.map(x=>`<li>${x}</li>`).join("")}</ul></div>` : `<div class="lt-ok">Every layer uses colours that are easy to tell apart on an LED.</div>`;
+  const host=document.getElementById("lt-boards"); host.innerHTML="";
+  DATA.lights.layers.forEach(L=>{
+    const sec=document.createElement("section"); sec.className="vcard N"; sec.style.gap="10px";
+    sec.innerHTML=`<div class="vhead"><h3>${esc(L.name)}</h3><span class="act">${esc(L.note)}</span></div>`;
+    const pair=document.createElement("div"); pair.className="lt-pair";
+    const mkcol=(label,cls,taps,fn,empty)=>{ const d=document.createElement("div"); d.className="board"; d.innerHTML=`<div class="bcap"><b><span class="tag ${cls}">${label}</span></b></div>`; if(empty){ d.insertAdjacentHTML("beforeend",`<p class="none-msg" style="max-width:300px">${empty}</p>`);} else d.appendChild(ledBoard(taps,fn)); return d; };
+    const cc = L.current;
+    pair.append(
+      mkcol("Current","tC",L.curTaps,(r,c)=>{ const col=cc&&cc[r][c]; return col?{bg:col,glow:`0 0 8px ${col}`,fg:"#111"}:null; }, cc?null:"No F-key layer today, so there are no lights to compare."),
+      mkcol("New","tN",L.taps,(r,c)=>{ const [role,level]=L.roles[r][c]; return litStyle(role,level); }));
+    sec.appendChild(pair); host.appendChild(sec);
+  });
+}
+
+let sel = null;
+function renderGroup(g){
+  const main = document.getElementById("main"); main.innerHTML = "";
+  if (g.slug === "verdict") { main.innerHTML = meta.verdictHTML; return; }
+  if (g.slug === "lights") { renderLights(main); return; }
+  const v = document.createElement("div"); v.className = "view " + (compact ? "compact" : "") + (showChg ? " showchg" : "");
+  v.innerHTML = `<div style="display:flex;flex-direction:column;gap:6px"><h2>${esc(g.title)}</h2>${g.note?`<p class="note">${g.note}</p>`:""}</div>`;
+  const cmp = document.createElement("div"); cmp.className = "cmp"; cmp.id = "cmp";
+  v.appendChild(cmp);
+  const vs = document.createElement("div"); vs.className = "versions";
+  VERS.forEach(([k,label,_,tcls]) => {
+    const layer = g.layers[k];
+    const card = document.createElement("div"); card.className = "vcard " + k; card.dataset.v = k;
+    if (!layer){ card.innerHTML = `<div class="vhead"><span class="tag ${tcls}">${esc(label)}</span><h3>Not in this version</h3></div><p class="none-msg">${esc(g.missingMsg||"This layer doesn't exist in this version.")}</p>`; vs.appendChild(card); return; }
+    card.innerHTML = `<div class="vhead"><span class="tag ${tcls}">${esc(label)}</span><h3>${esc(layer.name)}</h3><span class="act">${esc(layer.activation||"")}</span></div>`;
+    const body = document.createElement("div"); body.className = "vbody";
+    const wrap = document.createElement("div"); wrap.className = "kbwrap"; wrap.appendChild(board(layer, k==="C"?null:g.layers.C));
+    body.append(wrap, glossary(layer)); card.appendChild(body);
+    if (k !== "C" && g.reqHTML) card.insertAdjacentHTML("beforeend", g.reqHTML);
+    vs.appendChild(card);
+  });
+  v.appendChild(vs);
+  if (g.reasonsHTML) v.insertAdjacentHTML("beforeend", g.reasonsHTML);
+  main.appendChild(v);
+  v.addEventListener("click", e => { const t = e.target.closest("[data-r]"); if (t) select(g, +t.dataset.r, +t.dataset.c); });
+  // default selection: first key that differs and has a description
+  if (!sel || sel.g !== g.slug) {
+    let pick = null;
+    const last = VERS[VERS.length-1][0];
+    outer: for (const r of [2,1,3,4,0]) for (let c=0;c<(r===4?4:12);c++){
+      const vals = VERS.map(([k])=>g.layers[k] ? g.layers[k].tap[r][c] : null);
+      const nv = g.layers[last] ? g.layers[last].tap[r][c] : null;
+      if (new Set(vals).size>1 && G[nv] && !["Bspc","Tab","Esc","Space","Enter"].includes(nv)) { pick=[r,c]; break outer; }
+    }
+    sel = {g:g.slug, r:(pick||[2,1])[0], c:(pick||[2,1])[1]};
+  }
+  select(g, sel.r, sel.c);
+}
+
+function select(g, r, c){
+  sel = {g:g.slug, r, c};
+  document.querySelectorAll(".k.sel").forEach(k=>k.classList.remove("sel"));
+  document.querySelectorAll(`.k[data-r="${r}"][data-c="${c}"]`).forEach(k=>k.classList.add("sel"));
+  document.querySelectorAll(".gl button").forEach(b=>b.classList.toggle("on", +b.dataset.r===r && +b.dataset.c===c));
+  const cmp = document.getElementById("cmp"); if (!cmp) return;
+  cmp.innerHTML = `<div class="eyebrow">Selected key · ${esc(posName(r,c))}</div><div class="cmp-grid">` + VERS.map(([k,label,_,tcls]) => {
+    const l = g.layers[k];
+    if (!l) return `<div class="cmp-cell"><span class="tag ${tcls}" style="align-self:flex-start">${esc(label)}</span><span class="big">—</span><span class="desc">This layer doesn't exist in this version.</span></div>`;
+    const t = l.tap[r][c], h = l.hold[r][c]; const d = describe(t,h);
+    const g2 = G[t]; const nm = t==="" ? "▿ transparent" : t==="--" ? "no key" : (g2 && g2[0]!==t ? `${g2[0]}  (${t})` : t);
+    return `<div class="cmp-cell"><span class="tag ${tcls}" style="align-self:flex-start">${esc(label)}</span><span class="big">${esc(nm)}${h?` <span class="mono" style="font-size:13px;color:var(--muted)">hold ${esc(h)}</span>`:""}</span><span class="desc">${esc(d.desc)}</span></div>`;
+  }).join("") + `</div>`;
+}
+
+// state + routing
+let compact = false, showChg = true;
+try { compact = localStorage.getItem("vlr-compact")==="1"; } catch(e){}
+const pages = [...groups, {slug:"lights", title:"Lights"}, {slug:"verdict", title: meta.lastTab || "Features & verdict"}];
+const tabs = document.getElementById("tabs");
+pages.forEach(p => { const a = document.createElement("a"); a.href = "#"+p.slug; a.textContent = p.title; a.dataset.slug = p.slug; tabs.appendChild(a); });
+function route(){
+  const slug = (location.hash||"").slice(1);
+  const p = pages.find(x=>x.slug===slug) || pages[0];
+  tabs.querySelectorAll("a").forEach(a => { if (a.dataset.slug===p.slug) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  renderGroup(p);
+}
+window.addEventListener("hashchange", route);
+function setView(c){ compact = c; try{localStorage.setItem("vlr-compact", c?"1":"0")}catch(e){}
+  document.getElementById("v-detail").setAttribute("aria-pressed", String(!c));
+  document.getElementById("v-compact").setAttribute("aria-pressed", String(c));
+  const v = document.querySelector(".view"); if (v) v.classList.toggle("compact", c); }
+document.getElementById("v-detail").addEventListener("click", ()=>setView(false));
+document.getElementById("v-compact").addEventListener("click", ()=>setView(true));
+document.getElementById("chg").addEventListener("change", e => { showChg = e.target.checked; const v = document.querySelector(".view"); if (v) v.classList.toggle("showchg", showChg); });
+
+document.getElementById("lede").textContent = meta.lede;
+document.getElementById("intro").innerHTML = meta.introHTML;
+document.getElementById("legend").innerHTML = Object.entries(CATS).map(([k,v])=>`<span><i class="c-${k}"></i>${esc(v)}</span>`).join("") +
+  `<span><i style="box-shadow:inset 0 0 0 2px var(--chg)"></i>Changed from current</span><span><i style="border:1px dashed var(--muted)"></i>Transparent (uses the Base key)</span>`;
+setView(compact);
+route();
+</script>
