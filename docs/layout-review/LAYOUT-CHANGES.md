@@ -1,8 +1,8 @@
 # Layout changes
 
-The new layout is written directly in `nd96R/keymap.c`, and the custom behaviour lives in `nd96R/custom_qmk.c`.
-This file lists every key that changed from the original Oryx layout, for reference.
-You don't need to make these changes in Oryx. Design and reasoning are in [the layout review](index.html).
+This is the key-by-key plan the new layout was built from, kept for reference. The live layout is in Oryx
+(revision `JalezB` onwards), which differs in a few places: the original thumb holds were kept, the Mouse layer
+was removed (so F-keys is layer 4), and some keys moved. Design and reasoning are in [the layout review](index.html).
 
 The Mouse layer (layer 4) is unchanged. Keys not listed stay as they were.
 
@@ -140,16 +140,10 @@ A new layer 5, after the Mouse layer (custom_qmk.c expects `FN_LAYER 5`). Both i
 | Bottom row, right middle (I/K/,) | — | `RGB_VAD` |
 | Bottom row, right ring (O/L/.) | — | `RGB_VAI` |
 
-## Lights
+## Lights and editing
 
-The colours come from `light_map` in `nd96R/custom_qmk.c`, on every layer except Mouse, which keeps its `ledmap` colours from `keymap.c`.
-To change a colour, edit `light_colors` in `custom_qmk.c`, or pick colours on the Lights tab of the review page and send the "Copy settings" line.
-
-## Editing the layout from now on
-
-`nd96R/keymap.c` is now the source of truth. **Don't change the layout in Oryx.** The "Fetch and build layout" action still
-pulls from Oryx: if Oryx's export changes, the merge step either conflicts or brings old keys back. As long as the layout in
-Oryx stays untouched, the action finds no Oryx change and builds this repo's layout.
+The layout and LED colours are edited in Oryx. After a change, click **Compile** in Oryx and run the
+"Fetch and build layout" action. `nd96R/custom_qmk.c` only adds live highlights for Caps Word and Layer Lock.
 
 ## Check after flashing
 
